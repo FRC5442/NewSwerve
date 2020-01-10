@@ -7,11 +7,11 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
-
-import com.revrobotics.*;
+import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -25,12 +25,22 @@ public class SwerveModule extends SubsystemBase {
   public void moveCrab(Vector2d translationVector, double rotation) {
     //double currentAngle = absEncoder.get();
 
-    double speed = translationVector.magnitude();
+    double topGearSpeed = 0, bottomGearSpeed = 0;
+    final double DEAD_ZONE = Constants.JOYSTICK_DEAD_ZONE;
+    final double MODIFIER = 0.05;
 
-    if (Math.abs(speed) > 0.25) {
-      topGear.set((translationVector.magnitude() * 0.5) + (rotation));
-      bottomGear.set((-translationVector.magnitude() * 0.5) + (rotation));
+    if (Math.abs(translationVector.magnitude()) > DEAD_ZONE) {
+      topGearSpeed += translationVector.magnitude() * MODIFIER;
+      bottomGearSpeed += -translationVector.magnitude() * MODIFIER;
     }
+
+    if (Math.abs(rotation) > DEAD_ZONE) {
+      topGearSpeed += -rotation * MODIFIER;
+      bottomGearSpeed += -rotation * MODIFIER;
+    }
+
+    topGear.set(topGearSpeed);
+    bottomGear.set(bottomGearSpeed);
   }
 
   @Override

@@ -31,10 +31,10 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
+  public static Drive drive;
+
   public static SwerveModule backRightModule;
   public static SwerveGroup swerveGroup;
-
-  public static Drive drive;
 
   //Joysticks and JoystickButtons
   public static Joystick xboxController1;
@@ -58,6 +58,8 @@ public class RobotContainer {
     swerveGroup = new SwerveGroup();
 
     drive = new Drive();
+
+    swerveGroup.setDefaultCommand(drive);
 
     // Configure the button bindings
     configureButtonBindings();

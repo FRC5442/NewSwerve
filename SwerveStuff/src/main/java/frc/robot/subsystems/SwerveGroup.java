@@ -10,18 +10,16 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Drive;
 
 public class SwerveGroup extends SubsystemBase {
   
   SwerveModule backRightModule;
 
   public SwerveGroup() {
-  
+    backRightModule = RobotContainer.backRightModule;
   }
 
   public void moveCrab(Vector2d translation, double rotation) {
-    backRightModule = RobotContainer.backRightModule;
     backRightModule.moveCrab(translation, rotation);
   }
 

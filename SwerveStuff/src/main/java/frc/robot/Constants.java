@@ -19,4 +19,5 @@ public final class Constants {
     public static final double ROBOT_WIDTH = 0;
     public static final double ROBOT_LENGTH = 0;
     
+    public static final double JOYSTICK_DEAD_ZONE = 0.1;
 }

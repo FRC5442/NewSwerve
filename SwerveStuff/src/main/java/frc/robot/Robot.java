@@ -89,6 +89,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    RobotContainer.drive.schedule();
   }
 
   /**
@@ -96,7 +98,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.drive.execute();
   }
 
   @Override
