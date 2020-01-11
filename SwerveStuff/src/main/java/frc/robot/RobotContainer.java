@@ -10,6 +10,7 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -42,6 +43,10 @@ public class RobotContainer {
   //Speed Controllers
   public static CANSparkMax driveSpark3, driveSpark4;
 
+  //Sensors
+  public static AnalogPotentiometer backRightAbsEncoder;
+
+
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
@@ -53,8 +58,11 @@ public class RobotContainer {
     driveSpark3 = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
     driveSpark4 = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
 
+    //Sensors
+    backRightAbsEncoder = new AnalogPotentiometer(1);
+
     //Commands and subsytems
-    backRightModule = new SwerveModule(driveSpark3, driveSpark4);
+    backRightModule = new SwerveModule(driveSpark3, driveSpark4, backRightAbsEncoder);
     swerveGroup = new SwerveGroup();
 
     drive = new Drive();

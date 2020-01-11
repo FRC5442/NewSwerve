@@ -9,21 +9,27 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 
 public class SwerveModule extends SubsystemBase {
 
   CANSparkMax topGear, bottomGear;
+  AnalogPotentiometer absEncoder;
 
-  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear) {
+  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder) {
     this.topGear = topGear;
     this.bottomGear = bottomGear;
+    this.absEncoder = absEncoder;
   }
 
   public void moveCrab(Vector2d translationVector, double rotation) {
-    //double currentAngle = absEncoder.get();
+    double currentAngle = absEncoder.get();
+    SmartDashboard.putNumber("Absolute Encoder: ", currentAngle);
 
     double topGearSpeed = 0, bottomGearSpeed = 0;
     final double DEAD_ZONE = Constants.JOYSTICK_DEAD_ZONE;
