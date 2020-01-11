@@ -27,7 +27,7 @@ public class SwerveModule extends SubsystemBase {
 
     double topGearSpeed = 0, bottomGearSpeed = 0;
     final double DEAD_ZONE = Constants.JOYSTICK_DEAD_ZONE;
-    final double MODIFIER = 0.05;
+    final double MODIFIER = 0.5;
 
     if (Math.abs(translationVector.magnitude()) > DEAD_ZONE) {
       topGearSpeed += translationVector.magnitude() * MODIFIER;
