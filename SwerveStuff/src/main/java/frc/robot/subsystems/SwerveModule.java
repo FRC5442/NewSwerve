@@ -13,8 +13,8 @@ import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
+import frc.robot.SharedMethods;
 
 public class SwerveModule extends SubsystemBase {
 
@@ -28,20 +28,28 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void moveCrab(Vector2d translationVector, double rotation) {
-    double currentAngle = absEncoder.get();
+    //convert absolute encoder voltage to degrees and post to smartdashboard for testing
+    double currentEncVoltage = SharedMethods.roundTo(absEncoder.get(), 2) - Constants.ENCODER_OFFSET;
+    double currentAngle = (currentEncVoltage / 0.93) * 359;
     SmartDashboard.putNumber("Absolute Encoder: ", currentAngle);
 
+    //get the desired angle
+    double desiredAngle = Math.atan2(translationVector.y, translationVector.x);
+    SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
+
+    //initialize variables and constants
     double topGearSpeed = 0, bottomGearSpeed = 0;
-    final double DEAD_ZONE = Constants.JOYSTICK_DEAD_ZONE;
-    final double TRANSLATION_MOD = 0.5;
+    final double TRANSLATE_MOD = 0.5;
     final double ROTATE_MOD = 0.1;
 
-    if (Math.abs(translationVector.magnitude()) > DEAD_ZONE) {
-      topGearSpeed += translationVector.magnitude() * TRANSLATION_MOD;
-      bottomGearSpeed += -translationVector.magnitude() * TRANSLATION_MOD;
+    //cartesian translation
+    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
+      topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
+      bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
     }
 
-    if (Math.abs(rotation) > DEAD_ZONE) {
+    //rotation
+    if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       topGearSpeed += -rotation * ROTATE_MOD;
       bottomGearSpeed += -rotation * ROTATE_MOD;
     }
