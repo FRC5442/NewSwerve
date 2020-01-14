@@ -18,16 +18,16 @@ public class SharedMethods {
 
     public static double bearingToAngle(double bearing) {
         if (bearing >= 270) {
-            return 90 + (90 - (bearing - (90 * (bearing % 90))));
+            return 90 + (90 - (bearing - (90 * ((int) (bearing / 90)))));
         }
         else if (bearing >= 180) {
-            return 180 + (90 - (bearing - (90 * (bearing % 90))));
+            return 180 + (90 - (bearing - (90 * ((int) (bearing / 90)))));
         }
         else if (bearing >= 90) {
-            return 270 + (90 - (bearing - (90 * (bearing % 90))));
+            return 270 + (90 - (bearing - (90 * ((int) (bearing / 90)))));
         }
         else {
-            return (90 - (bearing - (90 * (bearing % 90))));
+            return (90 - (bearing - (90 * ((int) (bearing / 90)))));
         }
     }
 }
