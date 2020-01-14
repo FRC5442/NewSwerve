@@ -35,13 +35,14 @@ public class SwerveModule extends SubsystemBase {
 
     //convert absolute encoder voltage to degrees and post to smartdashboard for testing
     double currentEncVoltage = SharedMethods.roundTo(absEncoder.get(), 2) - Constants.ENCODER_OFFSET;
-    double currentAngle = ((currentEncVoltage / 0.93) * 359) - 180;
-    SmartDashboard.putNumber("Absolute Encoder: ", currentAngle);
+    double currentBearing = ((currentEncVoltage / 0.93) * 359);
+    double currentAngle = SharedMethods.bearingToAngle(currentBearing);
+    SmartDashboard.putNumber("Absolute Encoder: ", currentBearing);
 
     //cartesian translation
     if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
       //get the desired angle
-      double desiredAngle = -((Math.atan(translationVector.y/translationVector.x) * (180/Math.PI)) - 90);
+      double desiredAngle = (Math.atan(translationVector.y/translationVector.x) * (180/Math.PI));
       SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
       SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 100));
       
