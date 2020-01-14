@@ -7,6 +7,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -26,24 +27,24 @@ public class SwerveModule extends SubsystemBase {
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
   }
-
   public void moveCrab(Vector2d translationVector, double rotation) {
-    //convert absolute encoder voltage to degrees and post to smartdashboard for testing
-    double currentEncVoltage = SharedMethods.roundTo(absEncoder.get(), 2) - Constants.ENCODER_OFFSET;
-    double currentAngle = (currentEncVoltage / 0.93) * 359;
-    SmartDashboard.putNumber("Absolute Encoder: ", currentAngle);
-
-    //get the desired angle
-    double desiredAngle = Math.atan2(translationVector.y, translationVector.x);
-    SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
-
     //initialize variables and constants
     double topGearSpeed = 0, bottomGearSpeed = 0;
     final double TRANSLATE_MOD = 0.5;
     final double ROTATE_MOD = 0.1;
 
+    //convert absolute encoder voltage to degrees and post to smartdashboard for testing
+    double currentEncVoltage = SharedMethods.roundTo(absEncoder.get(), 2) - Constants.ENCODER_OFFSET;
+    double currentAngle = ((currentEncVoltage / 0.93) * 359) - 180;
+    SmartDashboard.putNumber("Absolute Encoder: ", currentAngle);
+
     //cartesian translation
     if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
+      //get the desired angle
+      double desiredAngle = -((Math.atan(translationVector.y/translationVector.x) * (180/Math.PI)) - 90);
+      SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
+      SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 100));
+      
       topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
       bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
     }
