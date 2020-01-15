@@ -10,6 +10,8 @@ package frc.robot;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -59,7 +61,7 @@ public class RobotContainer {
     driveSpark4 = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
 
     //Sensors
-    backRightAbsEncoder = new AnalogPotentiometer(1);
+    backRightAbsEncoder = new AnalogPotentiometer(1, 360, 0);
 
     //Commands and subsytems
     backRightModule = new SwerveModule(driveSpark3, driveSpark4, backRightAbsEncoder);

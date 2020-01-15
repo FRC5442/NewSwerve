@@ -19,8 +19,8 @@ public class SwerveGroup extends SubsystemBase {
     backRightModule = RobotContainer.backRightModule;
   }
 
-  public void moveCrab(Vector2d translation, double rotation) {
-    backRightModule.moveCrab(translation, rotation);
+  public void moveCrab(Vector2d translation, double rotation, double angle) {
+    backRightModule.moveCrab(translation, rotation, angle);
   }
 
   @Override

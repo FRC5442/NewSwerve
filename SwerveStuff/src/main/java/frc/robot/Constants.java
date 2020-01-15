@@ -19,8 +19,8 @@ public final class Constants {
     public static final double ROBOT_WIDTH = 0;
     public static final double ROBOT_LENGTH = 0;
     
-    public static final double JOYSTICK_DEAD_ZONE = 0.1;
+    public static final double JOYSTICK_DEAD_ZONE = 0.15;
     public static final double JOYSTICK_ANGLE_DEAD_ZONE = 116.385722; //need to change
 
-    public static final double ENCODER_OFFSET = 0.04;
+    public static final double ENCODER_OFFSET = 15.0;
 }

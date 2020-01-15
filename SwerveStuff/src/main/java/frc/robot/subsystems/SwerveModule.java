@@ -7,7 +7,6 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
@@ -21,33 +20,46 @@ public class SwerveModule extends SubsystemBase {
 
   CANSparkMax topGear, bottomGear;
   AnalogPotentiometer absEncoder;
+  double currentAngle = 0.0;
+  double startTime = 0.0;
+  double elapsedTime = 500;
 
   public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder) {
     this.topGear = topGear;
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
   }
-  public void moveCrab(Vector2d translationVector, double rotation) {
+  public void moveCrab(Vector2d translationVector, double rotation, double angle) {
     //initialize variables and constants
     double topGearSpeed = 0, bottomGearSpeed = 0;
     final double TRANSLATE_MOD = 0.5;
     final double ROTATE_MOD = 0.1;
+    final double ERROR_BOUND = 3;
 
-    //convert absolute encoder voltage to degrees and post to smartdashboard for testing
-    double currentEncVoltage = SharedMethods.roundTo(absEncoder.get(), 2) - Constants.ENCODER_OFFSET;
-    double currentBearing = ((currentEncVoltage / 0.93) * 359);
-    double currentAngle = SharedMethods.bearingToAngle(currentBearing);
-    SmartDashboard.putNumber("Absolute Encoder: ", currentBearing);
+    //get the desired angle
+    //double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
+    double desiredAngle = angle;
+    SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
+    SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 500) * ROTATE_MOD);
 
     //cartesian translation
-    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
-      //get the desired angle
-      double desiredAngle = (Math.atan(translationVector.y/translationVector.x) * (180/Math.PI));
-      SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
-      SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 100));
+    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || desiredAngle != -1) {
+      double error = desiredAngle - currentAngle;
+      SmartDashboard.putNumber("Error: ", error);
+
+      if (Math.abs(error) > ERROR_BOUND && Math.abs(error) < (360 - ERROR_BOUND)) {
+        if (Math.abs(error) < 0) {
+          topGearSpeed += Math.abs(error) / 500 * ROTATE_MOD;
+          bottomGearSpeed += Math.abs(error) / 500 * ROTATE_MOD;
+        }
+        else {
+          topGearSpeed += -Math.abs(error) / 500 * ROTATE_MOD;
+          bottomGearSpeed += -Math.abs(error) / 500 * ROTATE_MOD;
+        }
+      }
       
-      topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
-      bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
+      //topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
+      //bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
     }
 
     //rotation
@@ -62,5 +74,18 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateCurrentAngle();
+  }
+
+  public void updateCurrentAngle() {
+    elapsedTime = (System.nanoTime() / 1000000) - startTime;
+    SmartDashboard.putNumber("Elapsed Time: ", elapsedTime);
+    if (elapsedTime >= 50) {
+      startTime = System.nanoTime() / 1000000;
+
+      //convert absolute encoder voltage to degrees and post to smartdashboard for testing
+      currentAngle = SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0);
+      SmartDashboard.putNumber("Current Angle: ", currentAngle);
+    }
   }
 }
