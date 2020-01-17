@@ -34,32 +34,31 @@ public class SwerveModule extends SubsystemBase {
     double topGearSpeed = 0, bottomGearSpeed = 0;
     final double TRANSLATE_MOD = 0.5;
     final double ROTATE_MOD = 0.1;
-    final double ERROR_BOUND = 3;
+    final double ERROR_BOUND = 5;
 
-    //get the desired angle
-    //double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
-    double desiredAngle = angle;
-    SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
-    SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 500) * ROTATE_MOD);
+    SmartDashboard.putNumber("Joystick Magnitude: ", translationVector.magnitude());
 
     //cartesian translation
-    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || desiredAngle != -1) {
-      double error = desiredAngle - currentAngle;
+    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
+      //get the desired angle
+      double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
+      SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
+
+      //get the error
+      double error = (desiredAngle - currentAngle) % 180;
       SmartDashboard.putNumber("Error: ", error);
+      SmartDashboard.putNumber("Module Adjustment: ", -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error)));
 
       if (Math.abs(error) > ERROR_BOUND && Math.abs(error) < (360 - ERROR_BOUND)) {
-        if (Math.abs(error) < 0) {
-          topGearSpeed += Math.abs(error) / 500 * ROTATE_MOD;
-          bottomGearSpeed += Math.abs(error) / 500 * ROTATE_MOD;
-        }
-        else {
-          topGearSpeed += -Math.abs(error) / 500 * ROTATE_MOD;
-          bottomGearSpeed += -Math.abs(error) / 500 * ROTATE_MOD;
-        }
+        topGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error));
+        bottomGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error));
       }
-      
-      //topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
-      //bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
+      //the + and - 3 on ERROR_BOUND allow the module to start driving just before it reaches the desired angle
+      //this prevents the module from stopping due to a small change in the joystick
+      else {
+        topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
+        bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
+      }
     }
 
     //rotation
@@ -67,6 +66,12 @@ public class SwerveModule extends SubsystemBase {
       topGearSpeed += -rotation * ROTATE_MOD;
       bottomGearSpeed += -rotation * ROTATE_MOD;
     }
+
+    //set minimum gear speeds
+    if (topGearSpeed > 0 && topGearSpeed < 0.02) { topGearSpeed = 0.02; }
+    if (topGearSpeed < 0 && topGearSpeed > -0.02) { topGearSpeed = -0.02; }
+    if (bottomGearSpeed > 0 && bottomGearSpeed < 0.02) { bottomGearSpeed = 0.02; }
+    if (bottomGearSpeed < 0 && bottomGearSpeed > -0.02) { bottomGearSpeed = -0.02; }
 
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
