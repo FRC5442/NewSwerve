@@ -37,12 +37,16 @@ public class SwerveModule extends SubsystemBase {
     final double ERROR_BOUND = 3;
 
     //get the desired angle
-    //double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
-    double desiredAngle = angle;
+    double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
+    //double desiredAngle = angle;
+    SmartDashboard.putNumber("Drive Stick (X): ", translationVector.x);
+    SmartDashboard.putNumber("Drive Stick (Y): ", translationVector.y);
     SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
     SmartDashboard.putNumber("Module Adjustment: ", ((desiredAngle - currentAngle) / 500) * ROTATE_MOD);
+    SmartDashboard.putNumber("absEncoder: ", absEncoder.get());
 
     //cartesian translation
+    /*
     if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || desiredAngle != -1) {
       double error = desiredAngle - currentAngle;
       SmartDashboard.putNumber("Error: ", error);
@@ -61,12 +65,62 @@ public class SwerveModule extends SubsystemBase {
       //topGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
       //bottomGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
     }
-
+    */
     //rotation
-    if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
-      topGearSpeed += -rotation * ROTATE_MOD;
-      bottomGearSpeed += -rotation * ROTATE_MOD;
+    //if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
+    //  topGearSpeed += -rotation * ROTATE_MOD;
+    //  bottomGearSpeed += -rotation * ROTATE_MOD;
+    //}
+
+    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE)
+    {
+      topGearSpeed = translationVector.magnitude() * .1;
+      bottomGearSpeed = translationVector.magnitude() * -.1;
     }
+
+    //Turn to heading
+    
+    if (angle != -1 && Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE)
+    {
+      /*
+        if (absEncoder.get() < desiredAngle - 5)
+        {
+            topGearSpeed =- .1 * ((absEncoder.get() - desiredAngle) / desiredAngle);
+        }
+        if (absEncoder.get() > desiredAngle + 5)
+        {
+            bottomGearSpeed =- .1 * ((desiredAngle - absEncoder.get()) / desiredAngle);
+        }
+      */
+        if (currentAngle > desiredAngle + 5 )
+        {
+            topGearSpeed =- .001 * ((currentAngle - desiredAngle) / desiredAngle);
+        }
+        if (currentAngle < desiredAngle - 5 )
+        {
+            bottomGearSpeed =- .001 * ((desiredAngle - currentAngle) / desiredAngle);
+        }
+    }
+
+    
+
+    //Tank like turning
+    /*
+    if (Math.abs(translationVector.x) > Constants.JOYSTICK_DEAD_ZONE)
+    {
+      if (translationVector.x < 0)
+      {
+          topGearSpeed =- translationVector.x * .1;
+      }
+      else
+      {
+        bottomGearSpeed =- translationVector.x * .1;
+      }
+    }
+    */
+
+    SmartDashboard.putNumber("topGearSpeed:    ", topGearSpeed);
+    SmartDashboard.putNumber("bottomGearSpeed: ", bottomGearSpeed);
 
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
