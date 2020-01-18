@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CalibrateModules;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.BackRightModule;
@@ -34,6 +36,7 @@ public class RobotContainer {
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   public static Drive drive;
+  public static CalibrateModules calibrateModules;
 
   public static BackRightModule backRightModule;
   public static FrontLeftModule frontLeftModule;
@@ -42,6 +45,8 @@ public class RobotContainer {
 
   //Joysticks and JoystickButtons
   public static Joystick xboxController1;
+
+  public static JoystickButton xboxController1A;
 
   //Speed Controllers
   public static CANSparkMax driveSpark1, driveSpark2, driveSpark3, driveSpark4;
@@ -54,8 +59,10 @@ public class RobotContainer {
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    //Joysticks
+    //Joysticks and JoystickButtons
     xboxController1 = new Joystick(0);
+
+    xboxController1A = new JoystickButton(xboxController1, 1);
 
     //Speed Controllers
     driveSpark1 = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -73,6 +80,7 @@ public class RobotContainer {
     swerveGroup = new SwerveGroup();
 
     drive = new Drive();
+    calibrateModules = new CalibrateModules();
 
     swerveGroup.setDefaultCommand(drive);
 
@@ -87,7 +95,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    //xboxController1A.whenPressed(calibrateModules);
   }
 
 

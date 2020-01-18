@@ -22,12 +22,19 @@ public class SwerveModule extends SubsystemBase {
   double currentAngle = 0.0;
   double startTime = 0.0;
   double elapsedTime = 500;
+  double zeroOffset = 0;
 
   double TRANSLATE_MOD = 0.5;
   double ROTATE_MOD = 0.1;
   double ERROR_BOUND = 5;
+  String MODULE_ID = "";
 
-  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
+  double topGearSpeed = 0, bottomGearSpeed = 0;
+
+  public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
+    assert moduleID.equals("FRONT_LEFT") || moduleID.equals("FRONT_RIGHT") || moduleID.equals("BACK_LEFT") || moduleID.equals("BACK_RIGHT");
+    this.MODULE_ID = moduleID;
+
     this.topGear = topGear;
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
@@ -37,22 +44,42 @@ public class SwerveModule extends SubsystemBase {
       ROTATE_MOD *= -1;
     }
   }
+
   public void moveCrab(Vector2d translationVector, double rotation) {
-    //initialize variables and constants
-    double topGearSpeed = 0, bottomGearSpeed = 0;
+    topGearSpeed = 0;
+    bottomGearSpeed = 0;
 
     //cartesian translation
     if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
       //get the desired angle
       double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
 
-      double[] angleGearSpeeds = turnToAngle(desiredAngle);
-
-      topGearSpeed += angleGearSpeeds[0];
-      bottomGearSpeed += angleGearSpeeds[1];
+      turnToAngle(desiredAngle);
 
       topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
       bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
+    }
+    else if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
+      if (MODULE_ID.equals("FRONT_LEFT")) {
+        turnToAngle(225);
+        topGearSpeed += -rotation * TRANSLATE_MOD;
+        bottomGearSpeed += rotation * TRANSLATE_MOD;
+      }
+      else if (MODULE_ID.equals("FRONT_RIGHT")) {
+        turnToAngle(315);
+        topGearSpeed += -rotation * TRANSLATE_MOD;
+        bottomGearSpeed += rotation * TRANSLATE_MOD;
+      }
+      else if (MODULE_ID.equals("BACK_LEFT")) {
+        turnToAngle(315);
+        topGearSpeed += -rotation * TRANSLATE_MOD;
+        bottomGearSpeed += rotation * TRANSLATE_MOD;
+      }
+      else if (MODULE_ID.equals("BACK_RIGHT")) {
+        turnToAngle(225);
+        topGearSpeed += -rotation * TRANSLATE_MOD;
+        bottomGearSpeed += rotation * TRANSLATE_MOD;
+      }
     }
 
     //rotation
@@ -66,14 +93,9 @@ public class SwerveModule extends SubsystemBase {
     if (topGearSpeed < 0 && topGearSpeed > -0.02) { topGearSpeed = -0.02; }
     if (bottomGearSpeed > 0 && bottomGearSpeed < 0.02) { bottomGearSpeed = 0.02; }
     if (bottomGearSpeed < 0 && bottomGearSpeed > -0.02) { bottomGearSpeed = -0.02; }
-
-    topGear.set(topGearSpeed);
-    bottomGear.set(bottomGearSpeed);
   }
 
-  private double[] turnToAngle(double desiredAngle) {
-    double topGearSpeed = 0, bottomGearSpeed = 0;
-
+  public void turnToAngle(double desiredAngle) {
     //get the error
     double error = 0;
 
@@ -109,12 +131,15 @@ public class SwerveModule extends SubsystemBase {
         //see above
       }
     }
+  }
 
-    return new double[] {topGearSpeed, bottomGearSpeed};
+  public void calibrate() {
+    //work on it
   }
 
   @Override
   public void periodic() {
+    updateGearSpeeds();
     updateCurrentAngle();
     updateSmartDashboard();
   }
@@ -125,11 +150,16 @@ public class SwerveModule extends SubsystemBase {
       startTime = System.nanoTime() / 1000000;
 
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing
-      currentAngle = SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0);
+      currentAngle = (SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0));
     }
   }
 
   public void updateSmartDashboard() {
     //override in module specific class
+  }
+
+  public void updateGearSpeeds() {
+    topGear.set(topGearSpeed);
+    bottomGear.set(bottomGearSpeed);
   }
 }

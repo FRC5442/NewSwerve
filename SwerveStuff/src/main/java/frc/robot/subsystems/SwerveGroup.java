@@ -26,6 +26,11 @@ public class SwerveGroup extends SubsystemBase {
     backRightModule.moveCrab(translation, rotation);
   }
 
+  public void calibrate() {
+    frontLeftModule.calibrate();
+    backRightModule.calibrate();
+  }
+
   @Override
   public void periodic() {
   }
