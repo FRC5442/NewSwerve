@@ -24,26 +24,28 @@ public class SwerveModule extends SubsystemBase {
   double startTime = 0.0;
   double elapsedTime = 500;
 
-  final double TRANSLATE_MOD = 0.5;
-  final double ROTATE_MOD = 0.1;
-  final double ERROR_BOUND = 5;
+  double TRANSLATE_MOD = 0.5;
+  double ROTATE_MOD = 0.1;
+  double ERROR_BOUND = 5;
 
-  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder) {
+  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
     this.topGear = topGear;
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
+
+    if (inverted) {
+      TRANSLATE_MOD *= -1;
+      ROTATE_MOD *= -1;
+    }
   }
   public void moveCrab(Vector2d translationVector, double rotation) {
     //initialize variables and constants
     double topGearSpeed = 0, bottomGearSpeed = 0;
 
-    SmartDashboard.putNumber("Joystick Magnitude: ", translationVector.magnitude());
-
     //cartesian translation
     if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
       //get the desired angle
       double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
-      SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
 
       double[] angleGearSpeeds = turnToAngle(desiredAngle);
 
@@ -115,17 +117,20 @@ public class SwerveModule extends SubsystemBase {
   @Override
   public void periodic() {
     updateCurrentAngle();
+    updateSmartDashboard();
   }
 
   public void updateCurrentAngle() {
     elapsedTime = (System.nanoTime() / 1000000) - startTime;
-    SmartDashboard.putNumber("Elapsed Time: ", elapsedTime);
     if (elapsedTime >= 50) {
       startTime = System.nanoTime() / 1000000;
 
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing
       currentAngle = SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0);
-      SmartDashboard.putNumber("Current Angle: ", currentAngle);
     }
+  }
+
+  public void updateSmartDashboard() {
+    //override in module specific class
   }
 }

@@ -13,13 +13,16 @@ import frc.robot.RobotContainer;
 
 public class SwerveGroup extends SubsystemBase {
   
+  SwerveModule frontLeftModule;
   SwerveModule backRightModule;
 
   public SwerveGroup() {
+    frontLeftModule = RobotContainer.frontLeftModule;
     backRightModule = RobotContainer.backRightModule;
   }
 
   public void moveCrab(Vector2d translation, double rotation) {
+    frontLeftModule.moveCrab(translation, rotation);
     backRightModule.moveCrab(translation, rotation);
   }
 
