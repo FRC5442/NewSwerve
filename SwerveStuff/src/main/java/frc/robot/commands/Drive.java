@@ -29,7 +29,7 @@ public class Drive extends CommandBase {
   public void execute() {
     Joystick driveStick = RobotContainer.xboxController1;
     Vector2d translation = new Vector2d(driveStick.getRawAxis(0), driveStick.getRawAxis(1));
-    RobotContainer.swerveGroup.moveCrab(translation, driveStick.getRawAxis(4), driveStick.getPOV());
+    RobotContainer.swerveGroup.moveCrab(translation, driveStick.getRawAxis(4));
   }
 
   // Called once the command ends or is interrupted.

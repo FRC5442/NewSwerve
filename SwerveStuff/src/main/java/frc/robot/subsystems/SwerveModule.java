@@ -24,17 +24,18 @@ public class SwerveModule extends SubsystemBase {
   double startTime = 0.0;
   double elapsedTime = 500;
 
+  final double TRANSLATE_MOD = 0.5;
+  final double ROTATE_MOD = 0.1;
+  final double ERROR_BOUND = 5;
+
   public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder) {
     this.topGear = topGear;
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
   }
-  public void moveCrab(Vector2d translationVector, double rotation, double angle) {
+  public void moveCrab(Vector2d translationVector, double rotation) {
     //initialize variables and constants
     double topGearSpeed = 0, bottomGearSpeed = 0;
-    final double TRANSLATE_MOD = 0.5;
-    final double ROTATE_MOD = 0.1;
-    final double ERROR_BOUND = 5;
 
     SmartDashboard.putNumber("Joystick Magnitude: ", translationVector.magnitude());
 
@@ -44,21 +45,13 @@ public class SwerveModule extends SubsystemBase {
       double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
       SmartDashboard.putNumber("Desired Angle: ", desiredAngle);
 
-      //get the error
-      double error = (desiredAngle - currentAngle) % 180;
-      SmartDashboard.putNumber("Error: ", error);
-      SmartDashboard.putNumber("Module Adjustment: ", -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error)));
+      double[] angleGearSpeeds = turnToAngle(desiredAngle);
 
-      if (Math.abs(error) > ERROR_BOUND && Math.abs(error) < (360 - ERROR_BOUND)) {
-        topGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error));
-        bottomGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD * -(error / Math.abs(error));
-      }
-      //the + and - 3 on ERROR_BOUND allow the module to start driving just before it reaches the desired angle
-      //this prevents the module from stopping due to a small change in the joystick
-      else {
-        topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
-        bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
-      }
+      topGearSpeed += angleGearSpeeds[0];
+      bottomGearSpeed += angleGearSpeeds[1];
+
+      topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
+      bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
     }
 
     //rotation
@@ -75,6 +68,48 @@ public class SwerveModule extends SubsystemBase {
 
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
+  }
+
+  private double[] turnToAngle(double desiredAngle) {
+    double topGearSpeed = 0, bottomGearSpeed = 0;
+
+    //get the error
+    double error = 0;
+
+    if (desiredAngle > currentAngle) {
+      error = desiredAngle - currentAngle;
+      if (error < 180) {
+        //move D by increasing C
+        topGearSpeed += Math.abs(error) / 100 * ROTATE_MOD;
+        bottomGearSpeed += Math.abs(error) / 100 * ROTATE_MOD;
+      }
+      else if (error >= 180) {
+        //move towards D by decreasing C
+        topGearSpeed += -Math.abs(360 - error) / 100 * ROTATE_MOD;
+        bottomGearSpeed += -Math.abs(360 - error) / 100 * ROTATE_MOD;
+      }
+      else {
+        //idk man, shit broke
+      }
+    }
+    else if (desiredAngle < currentAngle) {
+      error = currentAngle - desiredAngle;
+      if (error < 180) {
+        //move towards D decreasing C
+        topGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD;
+        bottomGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD;
+      }
+      else if (error >= 180) {
+        //move towards D by increasing C
+        topGearSpeed += Math.abs(360 - error) / 100 * ROTATE_MOD;
+        bottomGearSpeed += Math.abs(360 - error) / 100 * ROTATE_MOD;
+      }
+      else {
+        //see above
+      }
+    }
+
+    return new double[] {topGearSpeed, bottomGearSpeed};
   }
 
   @Override
