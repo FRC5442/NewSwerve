@@ -112,7 +112,7 @@ public class SwerveModule extends SubsystemBase {
         bottomGearSpeed += -Math.abs(360 - error) / 100 * ROTATE_MOD;
       }
       else {
-        //idk man, shit broke
+        //if it gets here, youre in deep shit
       }
     }
     else if (desiredAngle < currentAngle) {
@@ -128,7 +128,7 @@ public class SwerveModule extends SubsystemBase {
         bottomGearSpeed += Math.abs(360 - error) / 100 * ROTATE_MOD;
       }
       else {
-        //see above
+        //again, if it gets here, you're in deep shit
       }
     }
   }
@@ -152,8 +152,15 @@ public class SwerveModule extends SubsystemBase {
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing
       currentAngle = (SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0));
 
-      double newAngle = ((currentAngle + zeroOffset) % (360 + zeroOffset));
-      currentAngle = newAngle;
+      //do if statement with 360 minus for negative numbers
+      double newAngle = currentAngle - zeroOffset;
+
+      if (newAngle < 0) {
+        currentAngle = 360 + newAngle; //new angle is always negative so current angle = 360 - (a negative number)
+      }
+      else {
+        currentAngle = newAngle;
+      }
     }
   }
 
