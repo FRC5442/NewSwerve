@@ -26,7 +26,7 @@ public class SwerveModule extends SubsystemBase {
 
   double TRANSLATE_MOD = 0.5;
   double ROTATE_MOD = 0.1;
-  double ERROR_BOUND = 5;
+  double ERROR_BOUND = 3;
   String MODULE_ID = "";
 
   double topGearSpeed = 0, bottomGearSpeed = 0;
@@ -66,7 +66,7 @@ public class SwerveModule extends SubsystemBase {
         bottomGearSpeed += rotation * TRANSLATE_MOD;
       }
       else if (MODULE_ID.equals("FRONT_RIGHT")) {
-        turnToAngle(315);
+        turnToAngle(315); //TODO: may need to change if facing wrong direction
         topGearSpeed += -rotation * TRANSLATE_MOD;
         bottomGearSpeed += rotation * TRANSLATE_MOD;
       }
@@ -134,7 +134,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void calibrate() {
-    //work on it
+    zeroOffset = currentAngle;
   }
 
   @Override
@@ -151,6 +151,9 @@ public class SwerveModule extends SubsystemBase {
 
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing
       currentAngle = (SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0));
+
+      double newAngle = ((currentAngle + zeroOffset) % (360 + zeroOffset));
+      currentAngle = newAngle;
     }
   }
 
