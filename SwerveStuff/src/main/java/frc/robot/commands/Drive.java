@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
@@ -30,6 +31,8 @@ public class Drive extends CommandBase {
     Joystick driveStick = RobotContainer.xboxController1;
     Vector2d translation = new Vector2d(driveStick.getRawAxis(0), driveStick.getRawAxis(1));
     RobotContainer.swerveGroup.moveCrab(translation, driveStick.getRawAxis(4));
+
+    SmartDashboard.putNumber("Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
   }
 
   // Called once the command ends or is interrupted.
