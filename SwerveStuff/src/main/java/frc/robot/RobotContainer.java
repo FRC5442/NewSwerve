@@ -7,12 +7,14 @@
 
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -53,6 +55,7 @@ public class RobotContainer {
 
   //Sensors
   public static AnalogPotentiometer frontLeftAbsEncoder, backRightAbsEncoder;
+  public static AHRS navX;
 
 
   /**
@@ -73,6 +76,8 @@ public class RobotContainer {
     //Sensors
     frontLeftAbsEncoder = new AnalogPotentiometer(0, 360, 0);
     backRightAbsEncoder = new AnalogPotentiometer(1, 360, 0);
+
+    navX = new AHRS(SerialPort.Port.kMXP);
 
     //Commands and subsytems
     frontLeftModule = new FrontLeftModule(driveSpark1, driveSpark2, frontLeftAbsEncoder, false);

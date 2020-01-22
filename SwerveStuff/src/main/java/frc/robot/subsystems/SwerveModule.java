@@ -25,8 +25,8 @@ public class SwerveModule extends SubsystemBase {
   double zeroOffset = 0;
 
   double TRANSLATE_MOD = 0.5;
-  double ROTATE_MOD = 0.1;
-  double ERROR_BOUND = 3;
+  double ROTATE_MOD = 0.2;
+  double ERROR_BOUND = 4;
   String MODULE_ID = "";
 
   double topGearSpeed = 0, bottomGearSpeed = 0;
@@ -86,6 +86,28 @@ public class SwerveModule extends SubsystemBase {
     if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       topGearSpeed += -rotation * ROTATE_MOD;
       bottomGearSpeed += -rotation * ROTATE_MOD;
+    }
+
+    //set minimum gear speeds
+    if (topGearSpeed > 0 && topGearSpeed < 0.02) { topGearSpeed = 0.02; }
+    if (topGearSpeed < 0 && topGearSpeed > -0.02) { topGearSpeed = -0.02; }
+    if (bottomGearSpeed > 0 && bottomGearSpeed < 0.02) { bottomGearSpeed = 0.02; }
+    if (bottomGearSpeed < 0 && bottomGearSpeed > -0.02) { bottomGearSpeed = -0.02; }
+  }
+
+  public void moveSwerve(Vector2d translationVector) {
+    topGearSpeed = 0;
+    bottomGearSpeed = 0;
+
+    //module heading
+    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
+      //get the desired angle
+      double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
+
+      turnToAngle(desiredAngle);
+
+      topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
+      bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
     }
 
     //set minimum gear speeds
