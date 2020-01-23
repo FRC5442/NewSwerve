@@ -32,6 +32,7 @@ public class Drive extends CommandBase {
     Vector2d translation = new Vector2d(driveStick.getRawAxis(0), driveStick.getRawAxis(1));
     RobotContainer.swerveGroup.moveCrab(translation, driveStick.getRawAxis(4));
 
+    SmartDashboard.putNumber("Joystick Magnitude: ", translation.magnitude());
     SmartDashboard.putNumber("Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
   }
 
