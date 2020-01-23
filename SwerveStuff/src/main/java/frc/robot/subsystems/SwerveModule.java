@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.drive.Vector2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
@@ -44,69 +45,16 @@ public class SwerveModule extends SubsystemBase {
       ROTATE_MOD *= -1;
     }
   }
-  /*
-  public void moveCrab(Vector2d translationVector, double rotation) {
-    topGearSpeed = 0;
-    bottomGearSpeed = 0;
-
-    //cartesian translation
-    if (Math.abs(translationVector.magnitude()) > Constants.JOYSTICK_DEAD_ZONE) {
-      //get the desired angle
-      double desiredAngle = (Math.atan2(translationVector.y, -translationVector.x) * (180/Math.PI)) + 180;
-
-      turnToAngle(desiredAngle);
-
-      topGearSpeed += -translationVector.magnitude() * TRANSLATE_MOD;
-      bottomGearSpeed += translationVector.magnitude() * TRANSLATE_MOD;
-    }
-    else if (Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
-      if (MODULE_ID.equals("FRONT_LEFT")) {
-        turnToAngle(225);
-        topGearSpeed += -rotation * TRANSLATE_MOD;
-        bottomGearSpeed += rotation * TRANSLATE_MOD;
-      }
-      else if (MODULE_ID.equals("FRONT_RIGHT")) {
-        turnToAngle(315); //TODO: may need to change if facing wrong direction
-        topGearSpeed += -rotation * TRANSLATE_MOD;
-        bottomGearSpeed += rotation * TRANSLATE_MOD;
-      }
-      else if (MODULE_ID.equals("BACK_LEFT")) {
-        turnToAngle(315);
-        topGearSpeed += -rotation * TRANSLATE_MOD;
-        bottomGearSpeed += rotation * TRANSLATE_MOD;
-      }
-      else if (MODULE_ID.equals("BACK_RIGHT")) {
-        turnToAngle(225);
-        topGearSpeed += -rotation * TRANSLATE_MOD;
-        bottomGearSpeed += rotation * TRANSLATE_MOD;
-      }
-    }
-
-    //set minimum gear speeds
-    if (topGearSpeed > 0 && topGearSpeed < 0.02) { topGearSpeed = 0.02; }
-    if (topGearSpeed < 0 && topGearSpeed > -0.02) { topGearSpeed = -0.02; }
-    if (bottomGearSpeed > 0 && bottomGearSpeed < 0.02) { bottomGearSpeed = 0.02; }
-    if (bottomGearSpeed < 0 && bottomGearSpeed > -0.02) { bottomGearSpeed = -0.02; }
-  }
-  */
+  
   public void move(double speed, double angle) {
     topGearSpeed = 0;
     bottomGearSpeed = 0;
 
-    //module heading
     if (Math.abs(speed) > Constants.JOYSTICK_DEAD_ZONE) {
-      //get the desired angle
       turnToAngle(angle);
-
-      //topGearSpeed += -speed * TRANSLATE_MOD;
-      //bottomGearSpeed += speed * TRANSLATE_MOD;
+      topGearSpeed += (-speed * TRANSLATE_MOD);
+      bottomGearSpeed += (speed * TRANSLATE_MOD);
     }
-    
-    //set minimum gear speeds
-    if (topGearSpeed > 0 && topGearSpeed < 0.02) { topGearSpeed = 0.02; }
-    if (topGearSpeed < 0 && topGearSpeed > -0.02) { topGearSpeed = -0.02; }
-    if (bottomGearSpeed > 0 && bottomGearSpeed < 0.02) { bottomGearSpeed = 0.02; }
-    if (bottomGearSpeed < 0 && bottomGearSpeed > -0.02) { bottomGearSpeed = -0.02; }
   }
 
   public void turnToAngle(double desiredAngle) {
@@ -177,6 +125,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
+    SmartDashboard.putNumber("Top Gear Speed: ", topGearSpeed);
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }
