@@ -20,7 +20,7 @@ public final class Constants {
     public static final double ROBOT_LENGTH = 19.1; //in inches
     public static final double ROBOT_RADIUS = Math.sqrt(Math.pow(ROBOT_WIDTH / 2, 2) + Math.pow(ROBOT_LENGTH / 2, 2));
     
-    public static final double JOYSTICK_DEAD_ZONE = 0.15; //joystick values 0-1
+    public static final double JOYSTICK_DEAD_ZONE = 0.02; //joystick values 0-1
 
     public static final double ENCODER_OFFSET = 15.0; //in degrees
 }

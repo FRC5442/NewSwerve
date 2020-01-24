@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
 public class Drive extends CommandBase {
@@ -29,11 +30,14 @@ public class Drive extends CommandBase {
   @Override
   public void execute() {
     Joystick driveStick = RobotContainer.xboxController1;
-    Vector2d translation = new Vector2d(driveStick.getRawAxis(0), driveStick.getRawAxis(1));
-    RobotContainer.swerveGroup.moveSwerve(translation, driveStick.getRawAxis(4));
 
-    SmartDashboard.putNumber("Joystick Magnitude: ", translation.magnitude());
-    SmartDashboard.putNumber("Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
+    Vector2d translation = new Vector2d(Math.pow(driveStick.getRawAxis(0), 2), Math.pow(driveStick.getRawAxis(1), 2));
+    RobotContainer.swerveGroup.moveSwerve(translation, Math.pow(driveStick.getRawAxis(4), 2));
+
+    SmartDashboard.putNumber("Left Joystick Magnitude: ", Math.pow(translation.magnitude(), 2));
+    SmartDashboard.putNumber("Left Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
+
+    SmartDashboard.putNumber("Right Joystick Magnitude: ", Math.pow(driveStick.getRawAxis(4), 2));
   }
 
   // Called once the command ends or is interrupted.

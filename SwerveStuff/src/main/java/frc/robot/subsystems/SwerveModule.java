@@ -10,17 +10,17 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
+import frc.robot.RobotContainer;
 
 public class SwerveModule extends SubsystemBase {
 
   CANSparkMax topGear, bottomGear;
   AnalogPotentiometer absEncoder;
   double currentAngle = 0.0;
+  double rawAngle = 0.0;
   double startTime = 0.0;
   double elapsedTime = 500;
   double zeroOffset = 0;
@@ -90,7 +90,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void calibrate() {
-    zeroOffset = currentAngle;
+    zeroOffset = rawAngle;
   }
 
   @Override
@@ -106,10 +106,10 @@ public class SwerveModule extends SubsystemBase {
       startTime = System.nanoTime() / 1000000;
 
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing
-      currentAngle = (SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0));
+      rawAngle = (SharedMethods.roundTo(((absEncoder.get() - Constants.ENCODER_OFFSET) / 335) * 360, 0));
 
       //do if statement with 360 minus for negative numbers
-      double newAngle = currentAngle - zeroOffset;
+      double newAngle = rawAngle - zeroOffset;
 
       if (newAngle < 0) {
         currentAngle = 360 + newAngle; //new angle is always negative so current angle = 360 - (a negative number)
