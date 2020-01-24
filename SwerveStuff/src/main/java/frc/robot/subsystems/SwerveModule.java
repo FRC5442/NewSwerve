@@ -125,7 +125,6 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
-    SmartDashboard.putNumber("Top Gear Speed: ", topGearSpeed);
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }
