@@ -27,7 +27,7 @@ public class SwerveModule extends SubsystemBase {
   double zeroOffset = 0;
 
   double TRANSLATE_MOD = 0.5;
-  double ROTATE_MOD = 0.15;
+  double ROTATE_MOD = 0.25;
   double ERROR_BOUND = 5;
 
   double topGearSpeed = 0;
@@ -54,12 +54,10 @@ public class SwerveModule extends SubsystemBase {
     topGearSpeed = 0;
     bottomGearSpeed = 0;
 
-    if (Math.abs(speed) > Constants.JOYSTICK_DEAD_ZONE) {
-      turnToAngle(angle);
+    turnToAngle(angle);
 
-      topGearSpeed += (-speed * TRANSLATE_MOD);
-      bottomGearSpeed += (speed * TRANSLATE_MOD);
-    }
+    topGearSpeed += (-speed * TRANSLATE_MOD);
+    bottomGearSpeed += (speed * TRANSLATE_MOD);
   }
 
   public void turnToAngle(double desiredAngle) {
@@ -96,6 +94,11 @@ public class SwerveModule extends SubsystemBase {
 
   public void calibrate() {
     zeroOffset = rawAngle;
+  }
+
+  public void stop() {
+    topGearSpeed = 0;
+    bottomGearSpeed = 0;
   }
 
   @Override

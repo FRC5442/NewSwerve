@@ -37,7 +37,7 @@ public class Drive extends CommandBase {
     double rightX = driveStick.getRawAxis(4);
 
     Vector2d translation = new Vector2d(leftX * Math.abs(leftX), leftY * Math.abs(leftY));
-    RobotContainer.swerveGroup.moveCrab(translation, rightX * Math.abs(rightX));
+    RobotContainer.swerveGroup.moveSwerve(translation, rightX * Math.abs(rightX));
 
     SmartDashboard.putNumber("Left Joystick Magnitude: ", translation.magnitude());
     SmartDashboard.putNumber("Left Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);

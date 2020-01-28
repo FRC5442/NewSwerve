@@ -34,13 +34,13 @@ public class SwerveGroup extends SubsystemBase {
       backRightModule.move(rotation, 225);
     }
     else {
-      frontLeftModule.move(0, 0);
-      backRightModule.move(0, 0);
+      frontLeftModule.stop();
+      backRightModule.stop();
     }
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroAngle = RobotContainer.navX.getAngle();
+    double gyroAngle = RobotContainer.navX.getAngle() * (Math.PI / 180); //in radians
     SmartDashboard.putNumber("Gyro Angle: ", gyroAngle);
 
     double FWD = -translation.y;
@@ -61,16 +61,24 @@ public class SwerveGroup extends SubsystemBase {
 
     double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2)); 
     double frontLeftAngle = Math.atan2(B, D) * (180 / Math.PI) + 180;
-    frontLeftModule.move(frontLeftSpeed, frontLeftAngle);
-    SmartDashboard.putNumber("Front Left Desired Angle: ", frontLeftAngle);
 
     double backLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2)); 
     double backLeftAngle = Math.atan2(A, D) * (180 / Math.PI) + 180;
 
     double backRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2)); 
     double backRightAngle = Math.atan2(A, C) * (180 / Math.PI) + 180;
-    backRightModule.move(backRightSpeed, backRightAngle);
-    SmartDashboard.putNumber("Back Right Desired Angle: ", backRightAngle);
+
+    if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
+      frontLeftModule.move(frontLeftSpeed, frontLeftAngle);
+      SmartDashboard.putNumber("Front Left Desired Angle: ", frontLeftAngle);
+
+      backRightModule.move(backRightSpeed, backRightAngle);
+      SmartDashboard.putNumber("Back Right Desired Angle: ", backRightAngle);
+    }
+    else {
+      frontLeftModule.stop();
+      backRightModule.stop();
+    }
   }
 
   public void calibrate() {
