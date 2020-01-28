@@ -7,18 +7,19 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
-import frc.robot.RobotContainer;
 
 public class SwerveModule extends SubsystemBase {
 
   CANSparkMax topGear, bottomGear;
   AnalogPotentiometer absEncoder;
+  CANEncoder topEncoder, bottomEncoder;
   double currentAngle = 0.0;
   double rawAngle = 0.0;
   double startTime = 0.0;
@@ -28,17 +29,20 @@ public class SwerveModule extends SubsystemBase {
   double TRANSLATE_MOD = 0.5;
   double ROTATE_MOD = 0.15;
   double ERROR_BOUND = 5;
-  String MODULE_ID = "";
 
-  double topGearSpeed = 0, bottomGearSpeed = 0;
+  double topGearSpeed = 0;
+  double bottomGearSpeed = 0;
 
-  public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
-    assert moduleID.equals("FRONT_LEFT") || moduleID.equals("FRONT_RIGHT") || moduleID.equals("BACK_LEFT") || moduleID.equals("BACK_RIGHT");
-    this.MODULE_ID = moduleID;
+  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
 
     this.topGear = topGear;
     this.bottomGear = bottomGear;
     this.absEncoder = absEncoder;
+
+    topEncoder = topGear.getEncoder();
+    topEncoder.setVelocityConversionFactor(360);
+    bottomEncoder = bottomGear.getEncoder();
+    bottomEncoder.setVelocityConversionFactor(360);
 
     if (inverted) {
       TRANSLATE_MOD *= -1;
@@ -52,6 +56,7 @@ public class SwerveModule extends SubsystemBase {
 
     if (Math.abs(speed) > Constants.JOYSTICK_DEAD_ZONE) {
       turnToAngle(angle);
+
       topGearSpeed += (-speed * TRANSLATE_MOD);
       bottomGearSpeed += (speed * TRANSLATE_MOD);
     }
@@ -125,6 +130,18 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
+    /*
+    double maxRate = 720 * 60; //in degrees per minute
+    topGearSpeed *= maxRate; //desired rate
+    bottomGearSpeed *= maxRate;
+
+    double topRateError = topGearSpeed - topEncoder.getVelocity();
+    double bottomRateError = bottomGearSpeed - bottomEncoder.getVelocity();
+
+    topGear.set((topGearSpeed + topRateError) / maxRate);
+    bottomGear.set((bottomGearSpeed + bottomRateError) / maxRate);
+    */
+
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }

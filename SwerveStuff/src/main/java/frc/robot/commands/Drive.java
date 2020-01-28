@@ -31,13 +31,18 @@ public class Drive extends CommandBase {
   public void execute() {
     Joystick driveStick = RobotContainer.xboxController1;
 
-    Vector2d translation = new Vector2d(Math.pow(driveStick.getRawAxis(0), 2), Math.pow(driveStick.getRawAxis(1), 2));
-    RobotContainer.swerveGroup.moveSwerve(translation, Math.pow(driveStick.getRawAxis(4), 2));
+    double leftX = driveStick.getRawAxis(0);
+    double leftY = driveStick.getRawAxis(1);
 
-    SmartDashboard.putNumber("Left Joystick Magnitude: ", Math.pow(translation.magnitude(), 2));
+    double rightX = driveStick.getRawAxis(4);
+
+    Vector2d translation = new Vector2d(leftX * Math.abs(leftX), leftY * Math.abs(leftY));
+    RobotContainer.swerveGroup.moveCrab(translation, rightX * Math.abs(rightX));
+
+    SmartDashboard.putNumber("Left Joystick Magnitude: ", translation.magnitude());
     SmartDashboard.putNumber("Left Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
 
-    SmartDashboard.putNumber("Right Joystick Magnitude: ", Math.pow(driveStick.getRawAxis(4), 2));
+    SmartDashboard.putNumber("Right Joystick Magnitude: ", rightX * Math.abs(rightX));
   }
 
   // Called once the command ends or is interrupted.
