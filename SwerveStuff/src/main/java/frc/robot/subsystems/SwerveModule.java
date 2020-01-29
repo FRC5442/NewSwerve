@@ -133,18 +133,6 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
-    /*
-    double maxRate = 720 * 60; //in degrees per minute
-    topGearSpeed *= maxRate; //desired rate
-    bottomGearSpeed *= maxRate;
-
-    double topRateError = topGearSpeed - topEncoder.getVelocity();
-    double bottomRateError = bottomGearSpeed - bottomEncoder.getVelocity();
-
-    topGear.set((topGearSpeed + topRateError) / maxRate);
-    bottomGear.set((bottomGearSpeed + bottomRateError) / maxRate);
-    */
-
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }
