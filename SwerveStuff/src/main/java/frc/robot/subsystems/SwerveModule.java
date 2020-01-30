@@ -7,10 +7,18 @@
 
 package frc.robot.subsystems;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
@@ -92,8 +100,32 @@ public class SwerveModule extends SubsystemBase {
     }
   }
 
-  public void calibrate() {
+  public void readFiledZeroOffset(String moduleID) {
+    File file = new File(moduleID.toUpperCase() + ".txt");
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(file));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        zeroOffset = Double.parseDouble(line.split(" ")[1]);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    SmartDashboard.putNumber(moduleID + " Filed Zero Offset: ", zeroOffset);
+  }
+
+  public void calibrate(String moduleID) {
     zeroOffset = rawAngle;
+
+    File file = new File(moduleID.toUpperCase() + ".txt");
+    try {
+      BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+      writer.write("Zero_Offset: " + zeroOffset);
+      writer.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public void stop() {
@@ -133,6 +165,7 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
+    //find a way to convert speed percentage to velocity, then to power
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }

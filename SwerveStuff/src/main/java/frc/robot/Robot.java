@@ -31,6 +31,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_robotContainer.readFiledZeroOffset();
   }
 
   /**
@@ -91,6 +92,8 @@ public class Robot extends TimedRobot {
     }
 
     RobotContainer.drive.schedule();
+
+    m_robotContainer.readFiledZeroOffset();
   }
 
   /**

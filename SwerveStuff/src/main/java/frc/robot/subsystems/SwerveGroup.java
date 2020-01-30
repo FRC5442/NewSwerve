@@ -81,9 +81,14 @@ public class SwerveGroup extends SubsystemBase {
     }
   }
 
+  public void readFiledZeroOffset() {
+    frontLeftModule.readFiledZeroOffset("FRONT_LEFT");
+    backRightModule.readFiledZeroOffset("BACK_RIGHT");
+  }
+
   public void calibrate() {
-    frontLeftModule.calibrate();
-    backRightModule.calibrate();
+    frontLeftModule.calibrate("FRONT_LEFT");
+    backRightModule.calibrate("BACK_RIGHT");
   }
 
   @Override
