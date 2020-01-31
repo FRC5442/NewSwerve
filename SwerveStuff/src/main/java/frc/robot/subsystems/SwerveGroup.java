@@ -47,11 +47,9 @@ public class SwerveGroup extends SubsystemBase {
     double STR = -translation.x;
     double RCW = -rotation;
 
-    /*
     double temp = (FWD * Math.cos(gyroAngle)) + (STR * Math.sin(gyroAngle));
     STR = (-FWD * Math.sin(gyroAngle)) + (STR * Math.cos(gyroAngle));
     FWD = temp;
-    */
 
     double A = STR - RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
     double B = STR + RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
@@ -84,13 +82,13 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void readFiledZeroOffset() {
-    frontLeftModule.readFiledZeroOffset("FRONT_LEFT");
-    backRightModule.readFiledZeroOffset("BACK_RIGHT");
+    frontLeftModule.readFiledZeroOffset();
+    backRightModule.readFiledZeroOffset();
   }
 
   public void calibrate() {
-    frontLeftModule.calibrate("FRONT_LEFT");
-    backRightModule.calibrate("BACK_RIGHT");
+    frontLeftModule.calibrate();
+    backRightModule.calibrate();
   }
 
   @Override

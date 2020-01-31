@@ -34,8 +34,8 @@ public class SwerveModule extends SubsystemBase {
   double elapsedTime = 500;
   double zeroOffset = 0;
 
-  double TRANSLATE_MOD = 0.3;
-  double ROTATE_MOD = 0.1;
+  double TRANSLATE_MOD = 0.4;
+  double ROTATE_MOD = 0.15;
   double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
@@ -45,11 +45,10 @@ public class SwerveModule extends SubsystemBase {
 
   public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
 
-    this.moduleID = moduleID;
+    this.moduleID = moduleID.toUpperCase();
 
-    if (moduleID.toUpperCase().equals("FRONT_LEFT")) zeroOffset = 186;
-    else if (moduleID.toUpperCase().equals("BACK_RIGHT")) zeroOffset = 48;
-
+    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 180;
+    else if (moduleID.equals("BACK_RIGHT")) zeroOffset = 48;
     //add more zero offsets for the other two modules
 
     this.topGear = topGear;
@@ -117,8 +116,9 @@ public class SwerveModule extends SubsystemBase {
     }
   }
 
-  public void readFiledZeroOffset(String moduleID) {
-    File file = new File(moduleID.toUpperCase() + ".txt");
+  public void readFiledZeroOffset() {
+    //to store on rio, aquire a flash drive to plug in the USB ports
+    File file = new File(moduleID + ".txt");
     try {
       BufferedReader reader = new BufferedReader(new FileReader(file));
       String line;
@@ -130,10 +130,10 @@ public class SwerveModule extends SubsystemBase {
     }
   }
 
-  public void calibrate(String moduleID) {
+  public void calibrate() {
     zeroOffset = rawAngle;
 
-    File file = new File(moduleID.toUpperCase() + ".txt");
+    File file = new File(moduleID + ".txt");
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
       writer.write("Zero_Offset: " + zeroOffset);
