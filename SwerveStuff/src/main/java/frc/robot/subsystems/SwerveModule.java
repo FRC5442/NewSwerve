@@ -34,14 +34,23 @@ public class SwerveModule extends SubsystemBase {
   double elapsedTime = 500;
   double zeroOffset = 0;
 
-  double TRANSLATE_MOD = 0.5;
-  double ROTATE_MOD = 0.25;
-  double ERROR_BOUND = 5;
+  double TRANSLATE_MOD = 0.3;
+  double ROTATE_MOD = 0.1;
+  double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
   double bottomGearSpeed = 0;
 
-  public SwerveModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
+  String moduleID = "";
+
+  public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
+
+    this.moduleID = moduleID;
+
+    if (moduleID.toUpperCase().equals("FRONT_LEFT")) zeroOffset = 186;
+    else if (moduleID.toUpperCase().equals("BACK_RIGHT")) zeroOffset = 48;
+
+    //add more zero offsets for the other two modules
 
     this.topGear = topGear;
     this.bottomGear = bottomGear;
@@ -62,7 +71,15 @@ public class SwerveModule extends SubsystemBase {
     topGearSpeed = 0;
     bottomGearSpeed = 0;
 
-    turnToAngle(angle);
+    if (Math.abs(currentAngle - angle) >= ERROR_BOUND && Math.abs(currentAngle - angle) <= 360 - ERROR_BOUND) {
+      topGear.setIdleMode(CANSparkMax.IdleMode.kBrake);
+      bottomGear.setIdleMode(CANSparkMax.IdleMode.kBrake);
+      turnToAngle(angle);
+    }
+    else {
+      //topGear.setIdleMode(CANSparkMax.IdleMode.kCoast);
+      //bottomGear.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    }
 
     topGearSpeed += (-speed * TRANSLATE_MOD);
     bottomGearSpeed += (speed * TRANSLATE_MOD);
@@ -111,8 +128,6 @@ public class SwerveModule extends SubsystemBase {
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    SmartDashboard.putNumber(moduleID + " Filed Zero Offset: ", zeroOffset);
   }
 
   public void calibrate(String moduleID) {

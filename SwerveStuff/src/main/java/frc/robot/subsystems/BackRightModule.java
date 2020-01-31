@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class BackRightModule extends SwerveModule {
     public BackRightModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
-        super(topGear, bottomGear, absEncoder, inverted);
+        super("BACK_RIGHT", topGear, bottomGear, absEncoder, inverted);
     }
 
     @Override

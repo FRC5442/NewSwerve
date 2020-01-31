@@ -40,16 +40,18 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroAngle = (RobotContainer.navX.getAngle() + 90) * (Math.PI / 180); //in radians
-    SmartDashboard.putNumber("Gyro Angle: ", gyroAngle + 90);
+    double gyroAngle = (RobotContainer.navX.getAngle()) * (Math.PI / 180); //in radians
+    SmartDashboard.putNumber("Gyro Angle: ", gyroAngle);
 
     double FWD = -translation.y;
     double STR = -translation.x;
-    double RCW = rotation;
+    double RCW = -rotation;
 
+    /*
     double temp = (FWD * Math.cos(gyroAngle)) + (STR * Math.sin(gyroAngle));
     STR = (-FWD * Math.sin(gyroAngle)) + (STR * Math.cos(gyroAngle));
     FWD = temp;
+    */
 
     double A = STR - RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
     double B = STR + RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
