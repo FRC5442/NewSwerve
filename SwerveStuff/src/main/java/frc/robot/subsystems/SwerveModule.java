@@ -18,7 +18,6 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
@@ -35,7 +34,7 @@ public class SwerveModule extends SubsystemBase {
   double zeroOffset = 0;
 
   double TRANSLATE_MOD = 0.4;
-  double ROTATE_MOD = 0.15;
+  double ROTATE_MOD = 0.12;
   double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
@@ -70,18 +69,14 @@ public class SwerveModule extends SubsystemBase {
     topGearSpeed = 0;
     bottomGearSpeed = 0;
 
-    if (Math.abs(currentAngle - angle) >= ERROR_BOUND && Math.abs(currentAngle - angle) <= 360 - ERROR_BOUND) {
-      topGear.setIdleMode(CANSparkMax.IdleMode.kBrake);
-      bottomGear.setIdleMode(CANSparkMax.IdleMode.kBrake);
-      turnToAngle(angle);
-    }
-    else {
-      //topGear.setIdleMode(CANSparkMax.IdleMode.kCoast);
-      //bottomGear.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    }
-
     topGearSpeed += (-speed * TRANSLATE_MOD);
     bottomGearSpeed += (speed * TRANSLATE_MOD);
+
+    if (Math.abs(currentAngle - angle) >= ERROR_BOUND && Math.abs(currentAngle - angle) <= 360 - ERROR_BOUND) {
+      ROTATE_MOD = 0.15 - (((Math.abs(topGearSpeed) + Math.abs(bottomGearSpeed)) / 2) * 0.15);
+
+      turnToAngle(angle);
+    }
   }
 
   public void turnToAngle(double desiredAngle) {
@@ -116,36 +111,24 @@ public class SwerveModule extends SubsystemBase {
     }
   }
 
-  public void readFiledZeroOffset() {
-    //to store on rio, aquire a flash drive to plug in the USB ports
-    File file = new File(moduleID + ".txt");
-    try {
-      BufferedReader reader = new BufferedReader(new FileReader(file));
-      String line;
-      while ((line = reader.readLine()) != null) {
-        zeroOffset = Double.parseDouble(line.split(" ")[1]);
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   public void calibrate() {
     zeroOffset = rawAngle;
-
-    File file = new File(moduleID + ".txt");
-    try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
-      writer.write("Zero_Offset: " + zeroOffset);
-      writer.close();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
   }
 
   public void stop() {
-    topGearSpeed = 0;
-    bottomGearSpeed = 0;
+    if (Math.abs(topGearSpeed) >= 0.05) {
+      topGearSpeed -= topGearSpeed / 4;
+    }
+    else {
+      topGearSpeed = 0;
+    }
+
+    if (Math.abs(bottomGearSpeed) >= 0.05) {
+      bottomGearSpeed -= bottomGearSpeed / 4;
+    }
+    else {
+      bottomGearSpeed = 0;
+    }
   }
 
   @Override

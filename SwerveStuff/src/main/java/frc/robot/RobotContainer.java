@@ -103,10 +103,6 @@ public class RobotContainer {
     xboxController1A.whenPressed(calibrateModules);
   }
 
-  public void readFiledZeroOffset() {
-    swerveGroup.readFiledZeroOffset();
-  }
-
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

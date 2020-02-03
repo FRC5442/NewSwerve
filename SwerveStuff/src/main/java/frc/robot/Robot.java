@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     System.out.println("Robot Initializing...");
     m_robotContainer = new RobotContainer();
-    m_robotContainer.readFiledZeroOffset();
     m_robotContainer.navX.zeroYaw();
   }
 
