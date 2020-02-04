@@ -21,6 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.CalibrateModules;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.HighGear;
+import frc.robot.commands.LowGear;
 import frc.robot.subsystems.BackRightModule;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.FrontLeftModule;
@@ -39,6 +41,8 @@ public class RobotContainer {
 
   public static Drive drive;
   public static CalibrateModules calibrateModules;
+  public static HighGear highGear;
+  public static LowGear lowGear;
 
   public static BackRightModule backRightModule;
   public static FrontLeftModule frontLeftModule;
@@ -49,6 +53,8 @@ public class RobotContainer {
   public static Joystick xboxController1;
 
   public static JoystickButton xboxController1A;
+  public static JoystickButton xboxController1LBumper;
+  public static JoystickButton xboxController1RBumper;
 
   //Speed Controllers
   public static CANSparkMax driveSpark1, driveSpark2, driveSpark3, driveSpark4;
@@ -66,6 +72,8 @@ public class RobotContainer {
     xboxController1 = new Joystick(0);
 
     xboxController1A = new JoystickButton(xboxController1, 1);
+    xboxController1LBumper = new JoystickButton(xboxController1, 5);
+    xboxController1RBumper = new JoystickButton(xboxController1, 6);
 
     //Speed Controllers
     driveSpark1 = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
@@ -86,6 +94,8 @@ public class RobotContainer {
 
     drive = new Drive();
     calibrateModules = new CalibrateModules();
+    highGear = new HighGear();
+    lowGear = new LowGear();
 
     swerveGroup.setDefaultCommand(drive);
 
@@ -101,6 +111,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     xboxController1A.whenPressed(calibrateModules);
+    xboxController1LBumper.whenPressed(lowGear);
+    xboxController1RBumper.whenPressed(highGear);
   }
 
 

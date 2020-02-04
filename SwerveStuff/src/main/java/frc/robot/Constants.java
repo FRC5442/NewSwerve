@@ -24,4 +24,18 @@ public final class Constants {
 
     public static final double ENCODER_OFFSET = 15.0; //in degrees
     public static final double GYRO_OFFSET = 0; //in degrees
+
+    public static enum DRIVE_STATE {
+        HIGH_GEAR(0.5), LOW_GEAR(0.2);
+
+        private double value;
+
+        private DRIVE_STATE(double value) {
+            this.value = value;
+        }
+
+        public double getValue() {
+            return this.value;
+        }
+    }
 }

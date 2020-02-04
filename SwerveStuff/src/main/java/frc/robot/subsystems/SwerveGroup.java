@@ -40,7 +40,7 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroAngle = (RobotContainer.navX.getAngle()); //in degrees
+    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.GYRO_OFFSET); //in degrees
     double convertedGyroAngle = ((360 - gyroAngle) % 360) + 90;
     if (convertedGyroAngle > 360) convertedGyroAngle -= 360;
 
@@ -60,17 +60,21 @@ public class SwerveGroup extends SubsystemBase {
     double C = FWD - RCW * (Constants.ROBOT_WIDTH / Constants.ROBOT_RADIUS);
     double D = FWD + RCW * (Constants.ROBOT_WIDTH / Constants.ROBOT_RADIUS);
 
-    double frontRightSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(C, 2)); 
-    double frontRightAngle = Math.atan2(B, C) * (180 / Math.PI) + 180;
+    //B and C
+    double frontRightSpeed = getMovementAttributes(B, C)[0]; 
+    double frontRightAngle = getMovementAttributes(B, C)[1];
 
-    double frontLeftSpeed = Math.sqrt(Math.pow(B, 2) + Math.pow(D, 2)); 
-    double frontLeftAngle = Math.atan2(B, D) * (180 / Math.PI) + 180;
+    //B and D
+    double frontLeftSpeed = getMovementAttributes(B, D)[0]; 
+    double frontLeftAngle = getMovementAttributes(B, D)[1];
 
-    double backLeftSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(D, 2)); 
-    double backLeftAngle = Math.atan2(A, D) * (180 / Math.PI) + 180;
+    //A and D
+    double backLeftSpeed = getMovementAttributes(A, D)[0]; 
+    double backLeftAngle = getMovementAttributes(A, D)[1];
 
-    double backRightSpeed = Math.sqrt(Math.pow(A, 2) + Math.pow(C, 2)); 
-    double backRightAngle = Math.atan2(A, C) * (180 / Math.PI) + 180;
+    //A and C
+    double backRightSpeed = getMovementAttributes(A, C)[0]; 
+    double backRightAngle = getMovementAttributes(A, C)[1];
 
     if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       frontLeftModule.move(frontLeftSpeed, frontLeftAngle);
@@ -88,6 +92,18 @@ public class SwerveGroup extends SubsystemBase {
   public void calibrate() {
     frontLeftModule.calibrate();
     backRightModule.calibrate();
+  }
+
+  public double[] getMovementAttributes(double c1, double c2) {
+    double speed = Math.sqrt(Math.pow(c1, 2) + Math.pow(c2, 2));
+    double angle = Math.atan2(c1, c2) * (180 / Math.PI) + 180;
+
+    return new double[] { speed, angle };
+  }
+
+  public void switchDriveState(Constants.DRIVE_STATE driveState) {
+    frontLeftModule.switchTranslationMod(driveState.getValue());
+    backRightModule.switchTranslationMod(driveState.getValue());
   }
 
   @Override
