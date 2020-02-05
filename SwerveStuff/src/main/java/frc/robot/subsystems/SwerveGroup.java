@@ -40,7 +40,7 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.GYRO_OFFSET); //in degrees
+    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.YAW_OFFSET); //in degrees
     double convertedGyroAngle = ((360 - gyroAngle) % 360) + 90;
     if (convertedGyroAngle > 360) convertedGyroAngle -= 360;
 

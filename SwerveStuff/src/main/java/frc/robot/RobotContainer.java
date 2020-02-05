@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commands.CalibrateGyro;
 import frc.robot.commands.CalibrateModules;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
@@ -41,6 +42,7 @@ public class RobotContainer {
 
   public static Drive drive;
   public static CalibrateModules calibrateModules;
+  public static CalibrateGyro calibrateGyro;
   public static HighGear highGear;
   public static LowGear lowGear;
 
@@ -53,6 +55,7 @@ public class RobotContainer {
   public static Joystick xboxController1;
 
   public static JoystickButton xboxController1A;
+  public static JoystickButton xboxController1B;
   public static JoystickButton xboxController1LBumper;
   public static JoystickButton xboxController1RBumper;
 
@@ -94,6 +97,7 @@ public class RobotContainer {
 
     drive = new Drive();
     calibrateModules = new CalibrateModules();
+    calibrateGyro = new CalibrateGyro();
     highGear = new HighGear();
     lowGear = new LowGear();
 
@@ -111,6 +115,7 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     xboxController1A.whenPressed(calibrateModules);
+    xboxController1B.whenPressed(calibrateGyro);
     xboxController1LBumper.whenPressed(lowGear);
     xboxController1RBumper.whenPressed(highGear);
   }

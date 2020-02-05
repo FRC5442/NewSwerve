@@ -23,7 +23,7 @@ public final class Constants {
     public static final double JOYSTICK_DEAD_ZONE = 0.03; //joystick values 0-1
 
     public static final double ENCODER_OFFSET = 15.0; //in degrees
-    public static final double GYRO_OFFSET = 0; //in degrees
+    public static double YAW_OFFSET = 0; //in degrees
 
     public static enum DRIVE_STATE {
         HIGH_GEAR(0.5), LOW_GEAR(0.2);
