@@ -75,6 +75,7 @@ public class RobotContainer {
     xboxController1 = new Joystick(0);
 
     xboxController1A = new JoystickButton(xboxController1, 1);
+    xboxController1B = new JoystickButton(xboxController1, 2);
     xboxController1LBumper = new JoystickButton(xboxController1, 5);
     xboxController1RBumper = new JoystickButton(xboxController1, 6);
 
