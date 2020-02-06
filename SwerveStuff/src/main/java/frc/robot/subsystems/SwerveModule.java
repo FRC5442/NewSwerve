@@ -7,18 +7,12 @@
 
 package frc.robot.subsystems;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.*;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
 
@@ -33,12 +27,14 @@ public class SwerveModule extends SubsystemBase {
   double elapsedTime = 500;
   double zeroOffset = 0;
 
-  double TRANSLATE_MOD = 0.2;
+  double TRANSLATE_MOD = 0.3;
   double ROTATE_MOD = 0.2;
   double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
   double bottomGearSpeed = 0;
+  double topGearPower = 0;
+  double bottomGearPower = 0;
 
   String moduleID = "";
 
@@ -46,7 +42,7 @@ public class SwerveModule extends SubsystemBase {
 
     this.moduleID = moduleID.toUpperCase();
 
-    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 181;
+    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 185;
     else if (moduleID.equals("BACK_RIGHT")) zeroOffset = 48;
     //add more zero offsets for the other two modules
 
@@ -55,9 +51,7 @@ public class SwerveModule extends SubsystemBase {
     this.absEncoder = absEncoder;
 
     topEncoder = topGear.getEncoder();
-    topEncoder.setVelocityConversionFactor(360);
     bottomEncoder = bottomGear.getEncoder();
-    bottomEncoder.setVelocityConversionFactor(360);
 
     if (inverted) {
       TRANSLATE_MOD *= -1;
@@ -76,6 +70,10 @@ public class SwerveModule extends SubsystemBase {
       ROTATE_MOD = 0.2 - (((Math.abs(topGearSpeed) + Math.abs(bottomGearSpeed)) / 2) * 0.15);
 
       turnToAngle(angle);
+    }
+    else if (Math.abs(currentAngle - angle) >= (ERROR_BOUND * 2) && Math.abs(currentAngle - angle) <= 360 - (ERROR_BOUND * 2)) {
+      topGearSpeed += (-speed * TRANSLATE_MOD);
+      bottomGearSpeed += (speed * TRANSLATE_MOD);
     }
   }
 
@@ -120,19 +118,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void stop() {
-    if (Math.abs(topGearSpeed) >= 0.02) {
-      topGearSpeed -= topGearSpeed / 5;
-    }
-    else {
-      topGearSpeed = 0;
-    }
+    topGearSpeed = 0;
+    bottomGearSpeed = 0;
 
-    if (Math.abs(bottomGearSpeed) >= 0.02) {
-      bottomGearSpeed -= bottomGearSpeed / 5;
-    }
-    else {
-      bottomGearSpeed = 0;
-    }
+    topGearPower = 0;
+    bottomGearPower = 0;
   }
 
   @Override
@@ -167,7 +157,28 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public void updateGearSpeeds() {
+    topGearSpeed = MathUtil.clamp(topGearSpeed, -1, 1);
+    bottomGearSpeed = MathUtil.clamp(bottomGearSpeed, -1, 1);
+
+    topGearPower = 0;
+    bottomGearPower = 0;
+
     //find a way to convert speed percentage to velocity, then to power
+    double maxDPS = 720; //degrees per second
+
+    double desiredTopRate = topGearSpeed * maxDPS;
+    double desiredBottomRate = bottomGearSpeed * maxDPS;
+    
+    double currentTopRate = topEncoder.getVelocity() / 60; //degrees per second
+    double currentBottomRate = bottomEncoder.getVelocity() / 60; //degrees per second
+
+    double step = 0.01;
+    double topRateStep = MathUtil.clamp((desiredTopRate - currentTopRate) / maxDPS, -step, step);
+    double bottomRateStep = MathUtil.clamp((desiredBottomRate - currentBottomRate) / maxDPS, -step, step);
+
+    topGearPower = MathUtil.clamp(topGearSpeed + topRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
+    bottomGearPower = MathUtil.clamp(bottomGearSpeed + bottomRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
+
     topGear.set(topGearSpeed);
     bottomGear.set(bottomGearSpeed);
   }
