@@ -179,7 +179,7 @@ public class SwerveModule extends SubsystemBase {
     topGearPower = MathUtil.clamp(topGearSpeed + topRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
     bottomGearPower = MathUtil.clamp(bottomGearSpeed + bottomRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
 
-    topGear.set(topGearSpeed);
-    bottomGear.set(bottomGearSpeed);
+    topGear.set(topGearPower);
+    bottomGear.set(bottomGearPower);
   }
 }

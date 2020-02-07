@@ -18,6 +18,8 @@ public class SwerveGroup extends SubsystemBase {
   SwerveModule frontLeftModule;
   SwerveModule backRightModule;
 
+  double convertedGyroAngle = 0;
+
   public SwerveGroup() {
     frontLeftModule = RobotContainer.frontLeftModule;
     backRightModule = RobotContainer.backRightModule;
@@ -40,16 +42,12 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.YAW_OFFSET); //in degrees
-    double convertedGyroAngle = ((360 - gyroAngle) % 360) + 90;
-    if (convertedGyroAngle > 360) convertedGyroAngle -= 360;
-
     double gyroRadians = convertedGyroAngle * (Math.PI / 180); //in radians
     SmartDashboard.putNumber("Gyro Angle: ", convertedGyroAngle);
 
-    double FWD = -translation.y;
-    double STR = -translation.x;
-    double RCW = -rotation;
+    double FWD = translation.y;
+    double STR = translation.x;
+    double RCW = rotation;
 
     double temp = (FWD * Math.cos(gyroRadians)) + (STR * Math.sin(gyroRadians));
     STR = (-FWD * Math.sin(gyroRadians)) + (STR * Math.cos(gyroRadians));
@@ -73,7 +71,7 @@ public class SwerveGroup extends SubsystemBase {
     double backLeftAngle = getMovementAttributes(A, D)[1];
 
     //A and C
-    double backRightSpeed = getMovementAttributes(A, C)[0]; 
+    double backRightSpeed = getMovementAttributes(A, C)[0];
     double backRightAngle = getMovementAttributes(A, C)[1];
 
     if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
@@ -108,5 +106,8 @@ public class SwerveGroup extends SubsystemBase {
 
   @Override
   public void periodic() {
+    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.YAW_OFFSET); //in degrees
+    convertedGyroAngle = ((360 - gyroAngle) % 360) + 90;
+    if (convertedGyroAngle > 360) convertedGyroAngle -= 360;
   }
 }
