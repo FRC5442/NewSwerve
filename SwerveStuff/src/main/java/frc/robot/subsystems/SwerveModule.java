@@ -12,7 +12,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpiutil.math.*;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.Constants;
 import frc.robot.SharedMethods;
 
@@ -27,8 +27,8 @@ public class SwerveModule extends SubsystemBase {
   double elapsedTime = 500;
   double zeroOffset = 0;
 
-  double TRANSLATE_MOD = 0.3;
-  double ROTATE_MOD = 0.2;
+  double TRANSLATE_MOD = 0.2;
+  double ROTATE_MOD = 0.25;
   double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
@@ -160,26 +160,7 @@ public class SwerveModule extends SubsystemBase {
     topGearSpeed = MathUtil.clamp(topGearSpeed, -1, 1);
     bottomGearSpeed = MathUtil.clamp(bottomGearSpeed, -1, 1);
 
-    topGearPower = 0;
-    bottomGearPower = 0;
-
-    //find a way to convert speed percentage to velocity, then to power
-    double maxDPS = 720; //degrees per second
-
-    double desiredTopRate = topGearSpeed * maxDPS;
-    double desiredBottomRate = bottomGearSpeed * maxDPS;
-    
-    double currentTopRate = topEncoder.getVelocity() / 60; //degrees per second
-    double currentBottomRate = bottomEncoder.getVelocity() / 60; //degrees per second
-
-    double step = 0.01;
-    double topRateStep = MathUtil.clamp((desiredTopRate - currentTopRate) / maxDPS, -step, step);
-    double bottomRateStep = MathUtil.clamp((desiredBottomRate - currentBottomRate) / maxDPS, -step, step);
-
-    topGearPower = MathUtil.clamp(topGearSpeed + topRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
-    bottomGearPower = MathUtil.clamp(bottomGearSpeed + bottomRateStep, -TRANSLATE_MOD, TRANSLATE_MOD);
-
-    topGear.set(topGearPower);
-    bottomGear.set(bottomGearPower);
+    topGear.set(topGearSpeed);
+    bottomGear.set(bottomGearSpeed);
   }
 }

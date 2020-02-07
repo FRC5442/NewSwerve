@@ -26,7 +26,7 @@ public final class Constants {
     public static double YAW_OFFSET = 0; //in degrees
 
     public static enum DRIVE_STATE {
-        HIGH_GEAR(0.5), LOW_GEAR(0.3);
+        HIGH_GEAR(0.5), LOW_GEAR(0.2);
 
         private double value;
 
