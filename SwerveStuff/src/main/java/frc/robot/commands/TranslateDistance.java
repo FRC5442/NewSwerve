@@ -7,17 +7,26 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 
-public class Drive extends CommandBase {
-
-  public Drive() {
+public class TranslateDistance extends CommandBase {
+  
+  double speed, angle, distance;
+  
+  /**
+   * Creates a new TranslateDistance.
+   */
+  public TranslateDistance(double speed, double angle, double distance) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.swerveGroup);
+    
+    this.speed = speed;
+    this.angle = angle;
+    this.distance = distance;
+
+    RobotContainer.navX.resetDisplacement();
   }
 
   // Called when the command is initially scheduled.
@@ -28,30 +37,23 @@ public class Drive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Joystick driveStick = RobotContainer.xboxController1;
-
-    double leftX = driveStick.getRawAxis(0);
-    double leftY = driveStick.getRawAxis(1);
-
-    double rightX = driveStick.getRawAxis(4);
-
-    Vector2d translation = new Vector2d(-leftX * Math.pow(Math.abs(leftX), 2), -leftY * Math.pow(Math.abs(leftY), 2));
-    RobotContainer.swerveGroup.moveSwerve(translation, -rightX * Math.pow(Math.abs(rightX), 2));
-
-    SmartDashboard.putNumber("Left Joystick Magnitude: ", translation.magnitude());
-    SmartDashboard.putNumber("Left Joystick Angle: ", (Math.atan2(translation.y, -translation.x) * (180/Math.PI)) + 180);
-
-    SmartDashboard.putNumber("Right Joystick Magnitude: ", rightX * Math.abs(rightX));
+    double x = speed * Math.cos(angle * (Math.PI / 180));
+    double y = speed * Math.sin(angle * (Math.PI / 180));
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(x, y), 0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    double xDisplacement = RobotContainer.navX.getDisplacementX();
+    double yDisplacement = RobotContainer.navX.getDisplacementY();
+
+    return Math.sqrt(Math.pow(xDisplacement, 2) + Math.pow(yDisplacement, 2)) >= distance;
   }
 }
