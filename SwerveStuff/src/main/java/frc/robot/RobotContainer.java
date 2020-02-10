@@ -18,14 +18,13 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.commandgroups.AutoTesting;
 import frc.robot.commands.CalibrateGyro;
 import frc.robot.commands.CalibrateModules;
 import frc.robot.commands.Drive;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.HighGear;
 import frc.robot.commands.LowGear;
 import frc.robot.subsystems.BackRightModule;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.FrontLeftModule;
 import frc.robot.subsystems.SwerveGroup;
 
@@ -37,8 +36,7 @@ import frc.robot.subsystems.SwerveGroup;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  AutoTesting m_autoCommand;
 
   public static Drive drive;
   public static CalibrateModules calibrateModules;
@@ -103,6 +101,9 @@ public class RobotContainer {
     lowGear = new LowGear();
 
     swerveGroup.setDefaultCommand(drive);
+
+    //auto command(s)
+    m_autoCommand = new AutoTesting();
 
     // Configure the button bindings
     configureButtonBindings();

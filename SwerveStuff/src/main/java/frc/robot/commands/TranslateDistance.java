@@ -25,20 +25,20 @@ public class TranslateDistance extends CommandBase {
     this.speed = speed;
     this.angle = angle;
     this.distance = distance;
-
-    RobotContainer.navX.resetDisplacement();
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("Translating...");
+    RobotContainer.navX.resetDisplacement();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     double x = speed * Math.cos(angle * (Math.PI / 180));
-    double y = speed * Math.sin(angle * (Math.PI / 180));
+    double y = -speed * Math.sin(angle * (Math.PI / 180));
     RobotContainer.swerveGroup.moveSwerve(new Vector2d(x, y), 0);
   }
 

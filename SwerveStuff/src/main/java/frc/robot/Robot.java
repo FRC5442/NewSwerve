@@ -33,7 +33,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     System.out.println("Robot Initializing...");
     m_robotContainer = new RobotContainer();
-    m_autonomousCommand = new AutoTesting();
   }
 
   /**
@@ -68,6 +67,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    RobotContainer.calibrateGyro.schedule();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -93,6 +93,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
     
+    RobotContainer.calibrateGyro.schedule();
     RobotContainer.drive.schedule();
   }
 

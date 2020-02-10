@@ -7,20 +7,25 @@
 
 package frc.robot.commandgroups;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.RotateToAngle;
 import frc.robot.commands.TranslateDistance;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
-public class AutoTesting extends ParallelCommandGroup {
+public class AutoTesting extends SequentialCommandGroup {
   /**
    * Creates a new AutoTesting.
    */
   public AutoTesting() {
     // Add your commands in the super() call, e.g.
-    // super(new FooCommand(), new BarCommand());super();
-    super(new TranslateDistance(0.5, 0, 10));
+    // super(new FooCommand(), new BarCommand());
+    
+    addCommands(
+      new TranslateDistance(0.5, 0, 15),
+      new RotateToAngle(0.25, 180),
+      new TranslateDistance(0.5, 45, 15)
+    );
   }
 }

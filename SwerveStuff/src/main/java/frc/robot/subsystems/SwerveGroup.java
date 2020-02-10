@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.SharedMethods;
 
 public class SwerveGroup extends SubsystemBase {
   
@@ -42,12 +43,12 @@ public class SwerveGroup extends SubsystemBase {
   }
 
   public void moveSwerve(Vector2d translation, double rotation) {
-    double gyroRadians = convertedGyroAngle * (Math.PI / 180); //in radians
-    SmartDashboard.putNumber("Gyro Angle: ", convertedGyroAngle);
+    double gyroRadians = getConvertedGyroAngle() * (Math.PI / 180); //in radians
+    SmartDashboard.putNumber("Gyro Angle: ", getConvertedGyroAngle());
 
-    double FWD = translation.y;
-    double STR = translation.x;
-    double RCW = rotation;
+    double FWD = -translation.y;
+    double STR = -translation.x;
+    double RCW = -rotation;
 
     double temp = (FWD * Math.cos(gyroRadians)) + (STR * Math.sin(gyroRadians));
     STR = (-FWD * Math.sin(gyroRadians)) + (STR * Math.cos(gyroRadians));
@@ -104,10 +105,18 @@ public class SwerveGroup extends SubsystemBase {
     backRightModule.switchTranslationMod(driveState.getValue());
   }
 
+  public double getConvertedGyroAngle() {
+    double rawGyroAngle = (RobotContainer.navX.getAngle() + Constants.YAW_OFFSET); //in degrees
+    double convertedRawGyroAngle = ((360 - rawGyroAngle + 90) % 360);
+    if (convertedRawGyroAngle < 0) {
+      return SharedMethods.roundTo(360 + convertedRawGyroAngle, 0);
+    }
+    else {
+      return SharedMethods.roundTo(convertedRawGyroAngle, 0);
+    }
+  }
+
   @Override
   public void periodic() {
-    double gyroAngle = (RobotContainer.navX.getAngle() + Constants.YAW_OFFSET); //in degrees
-    convertedGyroAngle = ((360 - gyroAngle) % 360) + 90;
-    if (convertedGyroAngle > 360) convertedGyroAngle -= 360;
   }
 }
