@@ -11,6 +11,8 @@ import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
@@ -24,8 +26,10 @@ import frc.robot.commands.CalibrateModules;
 import frc.robot.commands.Drive;
 import frc.robot.commands.HighGear;
 import frc.robot.commands.LowGear;
+import frc.robot.commands.RotateToGoal;
 import frc.robot.subsystems.BackRightModule;
 import frc.robot.subsystems.FrontLeftModule;
+import frc.robot.subsystems.PiVisionTable;
 import frc.robot.subsystems.SwerveGroup;
 
 /**
@@ -43,11 +47,14 @@ public class RobotContainer {
   public static CalibrateGyro calibrateGyro;
   public static HighGear highGear;
   public static LowGear lowGear;
+  public static RotateToGoal rotateToGoal;
 
   public static BackRightModule backRightModule;
   public static FrontLeftModule frontLeftModule;
 
   public static SwerveGroup swerveGroup;
+
+  public static PiVisionTable piVisionTable;
 
   //Joysticks and JoystickButtons
   public static Joystick xboxController1;
@@ -63,7 +70,8 @@ public class RobotContainer {
   //Sensors
   public static AnalogPotentiometer frontLeftAbsEncoder, backRightAbsEncoder;
   public static AHRS navX;
-
+  public static NetworkTableInstance inst;
+  public static NetworkTable visionTable;
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
@@ -88,17 +96,22 @@ public class RobotContainer {
     backRightAbsEncoder = new AnalogPotentiometer(1, 360, 0);
 
     navX = new AHRS(SerialPort.Port.kMXP);
+    
+    inst = NetworkTableInstance.getDefault();
+    visionTable = inst.getTable("5442Vision");
 
     //Commands and subsytems
     frontLeftModule = new FrontLeftModule(driveSpark1, driveSpark2, frontLeftAbsEncoder, false);
     backRightModule = new BackRightModule(driveSpark3, driveSpark4, backRightAbsEncoder, false);
     swerveGroup = new SwerveGroup();
+    piVisionTable = new PiVisionTable();
 
     drive = new Drive();
     calibrateModules = new CalibrateModules();
     calibrateGyro = new CalibrateGyro();
     highGear = new HighGear();
     lowGear = new LowGear();
+    rotateToGoal = new RotateToGoal(0.25);
 
     swerveGroup.setDefaultCommand(drive);
 
@@ -116,7 +129,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    xboxController1A.whenPressed(calibrateModules);
+    xboxController1A.whileHeld(rotateToGoal);
     xboxController1B.whenPressed(calibrateGyro);
     xboxController1LBumper.whenPressed(lowGear);
     xboxController1RBumper.whenPressed(highGear);
