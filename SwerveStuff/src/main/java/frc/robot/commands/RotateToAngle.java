@@ -9,11 +9,13 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.RobotContainer;
 
 public class RotateToAngle extends CommandBase {
 
   double speed, angle;
+  double elapsedTime, startTime;
 
   /**
    * Creates a new RotateToAngle.
@@ -32,12 +34,21 @@ public class RotateToAngle extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Rotating to angle...");
+
+    startTime = System.nanoTime() / 1000000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    elapsedTime = (System.nanoTime() / 1000000) - startTime;
+    turnRobot();
+  }
+
+  public void turnRobot() {
     double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
+
+    speed = MathUtil.clamp(speed * (Math.abs(currentAngle - angle) / 26), -speed, speed);
 
     if (angle > currentAngle) {
       double error = angle - currentAngle;
@@ -73,7 +84,8 @@ public class RotateToAngle extends CommandBase {
   @Override
   public boolean isFinished() {
     double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
-    System.out.println(Math.abs(currentAngle - angle));
-    return Math.abs(currentAngle - angle) <= 5 || Math.abs(currentAngle - angle) >= 360 - 5;
+    boolean isAtAngle = Math.abs(currentAngle - angle) <= 1 || Math.abs(currentAngle - angle) >= 359;
+    
+    return isAtAngle;
   }
 }

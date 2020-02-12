@@ -27,8 +27,8 @@ public class SwerveModule extends SubsystemBase {
   double elapsedTime = 500;
   double zeroOffset = 0;
 
-  double TRANSLATE_MOD = 0.2;
-  double ROTATE_MOD = 0.25;
+  double TRANSLATE_MOD = 0;
+  double ROTATE_MOD = 0.2;
   double ERROR_BOUND = 1;
 
   double topGearSpeed = 0;
@@ -42,7 +42,7 @@ public class SwerveModule extends SubsystemBase {
 
     this.moduleID = moduleID.toUpperCase();
 
-    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 185;
+    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 183;
     else if (moduleID.equals("BACK_RIGHT")) zeroOffset = 48;
     //add more zero offsets for the other two modules
 
@@ -71,10 +71,6 @@ public class SwerveModule extends SubsystemBase {
 
       turnToAngle(angle);
     }
-    else if (Math.abs(currentAngle - angle) >= (ERROR_BOUND * 2) && Math.abs(currentAngle - angle) <= 360 - (ERROR_BOUND * 2)) {
-      topGearSpeed += (-speed * TRANSLATE_MOD);
-      bottomGearSpeed += (speed * TRANSLATE_MOD);
-    }
   }
 
   public void turnToAngle(double desiredAngle) {
@@ -85,26 +81,26 @@ public class SwerveModule extends SubsystemBase {
       error = desiredAngle - currentAngle;
       if (error < 180) {
         //move D by increasing C
-        topGearSpeed += Math.abs(error) / 100 * ROTATE_MOD;
-        bottomGearSpeed += Math.abs(error) / 100 * ROTATE_MOD;
+        topGearSpeed += Math.abs(error) / 150 * ROTATE_MOD;
+        bottomGearSpeed += Math.abs(error) / 150 * ROTATE_MOD;
       }
       else if (error >= 180) {
         //move towards D by decreasing C
-        topGearSpeed += -Math.abs(360 - error) / 100 * ROTATE_MOD;
-        bottomGearSpeed += -Math.abs(360 - error) / 100 * ROTATE_MOD;
+        topGearSpeed += -Math.abs(360 - error) / 150 * ROTATE_MOD;
+        bottomGearSpeed += -Math.abs(360 - error) / 150 * ROTATE_MOD;
       }
     }
     else if (desiredAngle < currentAngle) {
       error = currentAngle - desiredAngle;
       if (error < 180) {
         //move towards D decreasing C
-        topGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD;
-        bottomGearSpeed += -Math.abs(error) / 100 * ROTATE_MOD;
+        topGearSpeed += -Math.abs(error) / 150 * ROTATE_MOD;
+        bottomGearSpeed += -Math.abs(error) / 150 * ROTATE_MOD;
       }
       else if (error >= 180) {
         //move towards D by increasing C
-        topGearSpeed += Math.abs(360 - error) / 100 * ROTATE_MOD;
-        bottomGearSpeed += Math.abs(360 - error) / 100 * ROTATE_MOD;
+        topGearSpeed += Math.abs(360 - error) / 150 * ROTATE_MOD;
+        bottomGearSpeed += Math.abs(360 - error) / 150 * ROTATE_MOD;
       }
     }
   }
@@ -134,7 +130,7 @@ public class SwerveModule extends SubsystemBase {
 
   public void updateCurrentAngle() {
     elapsedTime = (System.nanoTime() / 1000000) - startTime;
-    if (elapsedTime >= 50) {
+    if (elapsedTime >= 10) {
       startTime = System.nanoTime() / 1000000;
 
       //convert absolute encoder voltage to degrees and post to smartdashboard for testing

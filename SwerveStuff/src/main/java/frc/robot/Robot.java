@@ -68,6 +68,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     RobotContainer.calibrateGyro.schedule();
+    RobotContainer.lowGear.schedule();
+
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
     }
     
     RobotContainer.calibrateGyro.schedule();
+    RobotContainer.lowGear.schedule();
     RobotContainer.drive.schedule();
   }
 

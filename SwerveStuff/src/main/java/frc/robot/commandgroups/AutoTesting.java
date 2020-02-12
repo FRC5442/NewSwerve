@@ -24,8 +24,8 @@ public class AutoTesting extends SequentialCommandGroup {
     
     addCommands(
       new TranslateDistance(0.5, 0, 15),
-      new RotateToAngle(0.25, 180),
-      new TranslateDistance(0.5, 45, 15)
+      new RotateToAngle(0.25, 90)
+      //new TranslateDistance(0.5, 0, 15)
     );
   }
 }

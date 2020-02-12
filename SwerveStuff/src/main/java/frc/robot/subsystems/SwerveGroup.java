@@ -72,14 +72,14 @@ public class SwerveGroup extends SubsystemBase {
     double backLeftAngle = getMovementAttributes(A, D)[1];
 
     //A and C
-    double backRightSpeed = getMovementAttributes(A, C)[0];
+    double backRightSpeed = getMovementAttributes(A, C)[0] + 0.05;
     double backRightAngle = getMovementAttributes(A, C)[1];
 
     if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       frontLeftModule.move(frontLeftSpeed, frontLeftAngle);
-      SmartDashboard.putNumber("Front Left Desired Angle: ", frontLeftAngle);
-
       backRightModule.move(backRightSpeed, backRightAngle);
+
+      SmartDashboard.putNumber("Front Left Desired Angle: ", frontLeftAngle);
       SmartDashboard.putNumber("Back Right Desired Angle: ", backRightAngle);
     }
     else {
