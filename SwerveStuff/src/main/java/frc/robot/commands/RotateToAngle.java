@@ -15,7 +15,6 @@ import frc.robot.RobotContainer;
 public class RotateToAngle extends CommandBase {
 
   double speed, angle;
-  double elapsedTime, startTime;
 
   /**
    * Creates a new RotateToAngle.
@@ -34,14 +33,11 @@ public class RotateToAngle extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("Rotating to angle...");
-
-    startTime = System.nanoTime() / 1000000;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elapsedTime = (System.nanoTime() / 1000000) - startTime;
     turnRobot();
   }
 
@@ -52,24 +48,26 @@ public class RotateToAngle extends CommandBase {
 
     if (angle > currentAngle) {
       double error = angle - currentAngle;
+      double convertedSpeed = speed * MathUtil.clamp(error / 100, -1, 1);
       if (error < 180) {
         //move D by increasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -speed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed);
       }
       else if (error >= 180) {
         //move towards D by decreasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), speed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
       }
     }
     else if (angle < currentAngle) {
       double error = currentAngle - angle;
+      double convertedSpeed = speed * MathUtil.clamp(error / 100, -1, 1);
       if (error < 180) {
         //move towards D decreasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), speed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
       }
       else if (error >= 180) {
         //move towards D by increasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -speed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed);
       }
     }
   }
@@ -85,7 +83,7 @@ public class RotateToAngle extends CommandBase {
   public boolean isFinished() {
     double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
     boolean isAtAngle = Math.abs(currentAngle - angle) <= 1 || Math.abs(currentAngle - angle) >= 359;
-    
+
     return isAtAngle;
   }
 }
