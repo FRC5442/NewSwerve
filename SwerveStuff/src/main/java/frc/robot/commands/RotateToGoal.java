@@ -42,7 +42,8 @@ public class RotateToGoal extends CommandBase {
     SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
 
     if (RobotContainer.piVisionTable.isTapeDetected() && Math.abs(yawOffset) > 3) {
-      RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), speed * MathUtil.clamp((yawOffset / 10) * Math.abs(yawOffset / 10), -1, 1));
+      double convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
+      RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
     }
   }
 

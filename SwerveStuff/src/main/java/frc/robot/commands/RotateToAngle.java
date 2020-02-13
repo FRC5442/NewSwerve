@@ -26,7 +26,7 @@ public class RotateToAngle extends CommandBase {
     assert angle >= 0 && angle <= 359;
 
     this.speed = speed;
-    this.angle = angle + 90;
+    this.angle = angle;
   }
 
   // Called when the command is initially scheduled.
@@ -43,12 +43,19 @@ public class RotateToAngle extends CommandBase {
 
   public void turnRobot() {
     double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
+    double minSpeed = 0.07;
+    double convertedSpeed = 0;
 
-    speed = MathUtil.clamp(speed * (Math.abs(currentAngle - angle) / 26), -speed, speed);
+    if (speed <= minSpeed) {
+      convertedSpeed = minSpeed;
+    }
+    else {
+      convertedSpeed = MathUtil.clamp(speed * Math.sqrt((Math.abs(currentAngle - angle) / 75)), minSpeed, speed);
+    }
 
     if (angle > currentAngle) {
       double error = angle - currentAngle;
-      double convertedSpeed = speed * MathUtil.clamp(error / 100, -1, 1);
+      
       if (error < 180) {
         //move D by increasing C
         RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed);
@@ -60,7 +67,7 @@ public class RotateToAngle extends CommandBase {
     }
     else if (angle < currentAngle) {
       double error = currentAngle - angle;
-      double convertedSpeed = speed * MathUtil.clamp(error / 100, -1, 1);
+      
       if (error < 180) {
         //move towards D decreasing C
         RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
