@@ -129,7 +129,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    xboxController1A.whileHeld(rotateToGoal);
+    xboxController1A.whenPressed(rotateToGoal);
     xboxController1B.whenPressed(calibrateGyro);
     xboxController1LBumper.whenPressed(lowGear);
     xboxController1RBumper.whenPressed(highGear);

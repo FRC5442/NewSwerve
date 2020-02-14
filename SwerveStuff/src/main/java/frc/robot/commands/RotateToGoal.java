@@ -36,14 +36,20 @@ public class RotateToGoal extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double yawOffset = RobotContainer.piVisionTable.getYawOffset();
+    boolean tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
 
-    SmartDashboard.putBoolean("Tape Detected: ", RobotContainer.piVisionTable.isTapeDetected());
-    SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
+    if (tapeDetected) {
+      double yawOffset = RobotContainer.piVisionTable.getYawOffset();
 
-    if (RobotContainer.piVisionTable.isTapeDetected() && Math.abs(yawOffset) > 3) {
-      double convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
-      RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+      SmartDashboard.putBoolean("Tape Detected: ", tapeDetected);
+      SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
+
+      if (Math.abs(yawOffset) > 3) {
+        double convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+      }
+    } else if (!tapeDetected) {
+      RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 30);
     }
   }
 
