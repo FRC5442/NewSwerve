@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class FrontLeftModule extends SwerveModule {
 
     public FrontLeftModule(CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
-        super("FRONT_LEFT", topGear, bottomGear, absEncoder, inverted);
+        super("FRONT_LEFT", topGear, bottomGear, absEncoder, inverted, 180);
     }
 
     @Override

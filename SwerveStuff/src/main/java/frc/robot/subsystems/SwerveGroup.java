@@ -54,6 +54,12 @@ public class SwerveGroup extends SubsystemBase {
     STR = (-FWD * Math.sin(gyroRadians)) + (STR * Math.cos(gyroRadians));
     FWD = temp;
 
+    if (Math.abs(translation.magnitude()) <= Constants.JOYSTICK_DEAD_ZONE) {
+      FWD = 0;
+      STR = 0;
+    }
+    if (Math.abs(rotation) <= Constants.JOYSTICK_DEAD_ZONE) RCW = 0;
+
     double A = STR - RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
     double B = STR + RCW * (Constants.ROBOT_LENGTH / Constants.ROBOT_RADIUS);
     double C = FWD - RCW * (Constants.ROBOT_WIDTH / Constants.ROBOT_RADIUS);
@@ -62,18 +68,22 @@ public class SwerveGroup extends SubsystemBase {
     //B and C
     double frontRightSpeed = getMovementAttributes(B, C)[0]; 
     double frontRightAngle = getMovementAttributes(B, C)[1];
+    double maxSpeed = frontRightSpeed;
 
     //B and D
     double frontLeftSpeed = getMovementAttributes(B, D)[0]; 
     double frontLeftAngle = getMovementAttributes(B, D)[1];
+    if (frontLeftSpeed > maxSpeed) frontLeftSpeed = maxSpeed;
 
     //A and D
     double backLeftSpeed = getMovementAttributes(A, D)[0]; 
     double backLeftAngle = getMovementAttributes(A, D)[1];
+    if (backLeftSpeed > maxSpeed) backLeftSpeed = maxSpeed;
 
     //A and C
-    double backRightSpeed = getMovementAttributes(A, C)[0] + 0.05;
+    double backRightSpeed = getMovementAttributes(A, C)[0];
     double backRightAngle = getMovementAttributes(A, C)[1];
+    if (backRightSpeed > maxSpeed) backRightSpeed = maxSpeed;
 
     if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       frontLeftModule.move(frontLeftSpeed, frontLeftAngle);

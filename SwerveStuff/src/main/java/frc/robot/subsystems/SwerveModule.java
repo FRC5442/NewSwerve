@@ -38,13 +38,11 @@ public class SwerveModule extends SubsystemBase {
 
   String moduleID = "";
 
-  public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted) {
+  public SwerveModule(String moduleID, CANSparkMax topGear, CANSparkMax bottomGear, AnalogPotentiometer absEncoder, boolean inverted, double zeroOffset) {
 
     this.moduleID = moduleID.toUpperCase();
 
-    if (moduleID.equals("FRONT_LEFT")) zeroOffset = 183;
-    else if (moduleID.equals("BACK_RIGHT")) zeroOffset = 48;
-    //add more zero offsets for the other two modules
+    this.zeroOffset = zeroOffset;
 
     this.topGear = topGear;
     this.bottomGear = bottomGear;
