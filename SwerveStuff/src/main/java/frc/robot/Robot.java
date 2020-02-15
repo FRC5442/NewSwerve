@@ -54,8 +54,10 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     boolean tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+    double yawOffset = RobotContainer.piVisionTable.getYawOffset();
 
     SmartDashboard.putBoolean("Tape Detected: ", tapeDetected);
+    SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
   }
 
   /**

@@ -16,6 +16,9 @@ import frc.robot.RobotContainer;
 public class RotateToGoal extends CommandBase {
 
   double speed = 0;
+  double convertedSpeed = 0;
+  double yawOffset = 0;
+  boolean tapeDetected = false;
 
   /**
    * Creates a new RotateToGoal.
@@ -36,31 +39,42 @@ public class RotateToGoal extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    boolean tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+    tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+
+    yawOffset = RobotContainer.piVisionTable.getYawOffset();
 
     if (tapeDetected) {
-      double yawOffset = RobotContainer.piVisionTable.getYawOffset();
-
-      SmartDashboard.putBoolean("Tape Detected: ", tapeDetected);
-      SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
 
       if (Math.abs(yawOffset) > 3) {
-        double convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
+        convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
         RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+        System.out.println("Rotating...");
+      } else {
+        this.isFinished();
       }
     } else if (!tapeDetected) {
-      RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 30);
+      double currentAngel = RobotContainer.navX.getAngle();
+
+      new RotateToAngle(30, (currentAngel + 30));
+      System.out.println("Scanning...");
     }
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), 0);
+    System.out.println("RotateToGoal Stopped");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (Math.abs(yawOffset) < 3) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
