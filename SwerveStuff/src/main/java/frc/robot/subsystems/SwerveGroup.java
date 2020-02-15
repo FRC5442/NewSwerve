@@ -88,9 +88,6 @@ public class SwerveGroup extends SubsystemBase {
     if (Math.abs(translation.magnitude()) > Constants.JOYSTICK_DEAD_ZONE || Math.abs(rotation) > Constants.JOYSTICK_DEAD_ZONE) {
       frontLeftModule.move(frontLeftSpeed, frontLeftAngle);
       backRightModule.move(backRightSpeed, backRightAngle);
-
-      SmartDashboard.putNumber("Front Left Desired Angle: ", frontLeftAngle);
-      SmartDashboard.putNumber("Back Right Desired Angle: ", backRightAngle);
     }
     else {
       frontLeftModule.stop();
