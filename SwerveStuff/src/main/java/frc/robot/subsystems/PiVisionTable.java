@@ -27,6 +27,26 @@ public class PiVisionTable extends SubsystemBase {
     return yawOffset;
   }
 
+  public double getDistanceM() {
+    double distance = visionTable.getEntry("Distance(m)").getDouble(0);
+    return distance;
+  }
+
+  public double getDistanceIN() {
+    double distance = visionTable.getEntry("Distance(in)").getDouble(0);
+    return distance;
+  }
+
+  public double getDistanceCM() {
+    double distance = visionTable.getEntry("Distance(cm)").getDouble(0);
+    return distance;
+  }
+
+  public boolean isLidarConnected() {
+    boolean lidarConnected = visionTable.getEntry("lidarConnected").getBoolean(false);
+    return lidarConnected;
+  }
+
   public boolean isTapeDetected() {
     boolean tapeDetected = visionTable.getEntry("tapeDetected").getBoolean(false);
     return tapeDetected;

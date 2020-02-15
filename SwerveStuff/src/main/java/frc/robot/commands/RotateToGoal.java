@@ -53,10 +53,10 @@ public class RotateToGoal extends CommandBase {
         this.isFinished();
       }
     } else if (!tapeDetected) {
-      double currentAngel = RobotContainer.navX.getAngle();
-
-      new RotateToAngle(30, (currentAngel + 30));
-      System.out.println("Scanning...");
+      double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
+      
+      Robot.scheduleCommand(new RotateToAngle(0.25, (0)));
+      System.out.println("Scanning...: " + currentAngle);
     }
     
   }

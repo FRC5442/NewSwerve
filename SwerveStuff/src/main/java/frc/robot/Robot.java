@@ -54,10 +54,22 @@ public class Robot extends TimedRobot {
     CommandScheduler.getInstance().run();
 
     boolean tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+    boolean lidarConnected = RobotContainer.piVisionTable.isLidarConnected();
     double yawOffset = RobotContainer.piVisionTable.getYawOffset();
+    double distanceM = RobotContainer.piVisionTable.getDistanceM();
+    double distanceIN = RobotContainer.piVisionTable.getDistanceIN();
+    double distanceCM = RobotContainer.piVisionTable.getDistanceCM();
 
     SmartDashboard.putBoolean("Tape Detected: ", tapeDetected);
+    SmartDashboard.putBoolean("Lidar Connected: ", lidarConnected);
     SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
+    SmartDashboard.putNumber("Distance(m): ", distanceM);
+    SmartDashboard.putNumber("Distance(in)", distanceIN);
+    SmartDashboard.putNumber("Distance(cm)", distanceCM);
+  }
+
+  public void scheduleCommand(Command command) {
+    command.schedule();
   }
 
   /**
