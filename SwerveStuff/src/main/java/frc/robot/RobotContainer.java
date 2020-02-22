@@ -20,6 +20,10 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import frc.robot.subsystems.BackRightModule;
+import frc.robot.subsystems.FrontLeftModule;
+import frc.robot.subsystems.PiVisionTable;
+import frc.robot.subsystems.SwerveGroup;
 import frc.robot.commandgroups.AutoTesting;
 import frc.robot.commands.CalibrateGyro;
 import frc.robot.commands.CalibrateModules;
@@ -27,10 +31,6 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.HighGear;
 import frc.robot.commands.LowGear;
 import frc.robot.commands.RotateToGoal;
-import frc.robot.subsystems.BackRightModule;
-import frc.robot.subsystems.FrontLeftModule;
-import frc.robot.subsystems.PiVisionTable;
-import frc.robot.subsystems.SwerveGroup;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a

@@ -69,6 +69,7 @@ public class Robot extends TimedRobot {
   }
 
   public static void scheduleCommand(Command command) {
+    System.out.println("Scheduling Command " + command);
     command.schedule();
   }
 
