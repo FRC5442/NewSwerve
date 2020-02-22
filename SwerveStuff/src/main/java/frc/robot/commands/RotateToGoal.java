@@ -56,7 +56,14 @@ public class RotateToGoal extends CommandBase {
     } else {
       double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
       
-      Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 15)));
+      if (currentAngle >= 180 && currentAngle <= 270) {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 30)));
+      } else if (currentAngle >= 270 && currentAngle <= 360) {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle - 30)));
+      } else {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 30)));
+      }
+      
       System.out.println("Scanning...: " + currentAngle);
     }
     
