@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
 import frc.robot.RobotContainer;
+import frc.robot.Robot;
 
 public class RotateToGoal extends CommandBase {
 
@@ -52,10 +53,10 @@ public class RotateToGoal extends CommandBase {
       } else {
         this.isFinished();
       }
-    } else if (!tapeDetected) {
+    } else {
       double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
       
-      Robot.scheduleCommand(new RotateToAngle(0.25, (0)));
+      Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 15)));
       System.out.println("Scanning...: " + currentAngle);
     }
     
@@ -71,10 +72,14 @@ public class RotateToGoal extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(yawOffset) < 3) {
-      return true;
+    if (tapeDetected) {
+      if (Math.abs(yawOffset) < 3) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
   }
 }

@@ -68,7 +68,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("Distance(cm)", distanceCM);
   }
 
-  public void scheduleCommand(Command command) {
+  public static void scheduleCommand(Command command) {
     command.schedule();
   }
 
