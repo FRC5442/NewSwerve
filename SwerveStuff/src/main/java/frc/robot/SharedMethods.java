@@ -7,6 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.drive.Vector2d;
+import frc.robot.RobotContainer;
+
 /**
  * Add your docs here.
  */
@@ -14,6 +18,17 @@ public class SharedMethods {
     public static double roundTo(double value, int places) {
         double scale = Math.pow(10, places);
         return Math.round(value * scale) / scale;
+    }
+
+    public static void customDelay(double time) {
+        System.out.println("Starting Delay...");
+        double initTimestamp = Timer.getFPGATimestamp();
+
+        while (Timer.getFPGATimestamp() < initTimestamp + time) {
+            RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
+            //System.out.println("Delaying...: " + initTimestamp + " " + Timer.getFPGATimestamp() + " " + time);
+        }
+        System.out.println("Done Delaying");
     }
 
     public static double bearingToAngle(double bearing) {
