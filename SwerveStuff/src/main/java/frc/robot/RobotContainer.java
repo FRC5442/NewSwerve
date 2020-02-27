@@ -31,7 +31,6 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.HighGear;
 import frc.robot.commands.LowGear;
 import frc.robot.commands.RotateToGoal;
-import frc.robot.commands.DelayTest;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -49,7 +48,6 @@ public class RobotContainer {
   public static HighGear highGear;
   public static LowGear lowGear;
   public static RotateToGoal rotateToGoal;
-  public static DelayTest testDelay;
 
   public static BackRightModule backRightModule;
   public static FrontLeftModule frontLeftModule;
@@ -63,7 +61,6 @@ public class RobotContainer {
 
   public static JoystickButton xboxController1A;
   public static JoystickButton xboxController1B;
-  public static JoystickButton xboxController1X;
   public static JoystickButton xboxController1LBumper;
   public static JoystickButton xboxController1RBumper;
 
@@ -85,7 +82,6 @@ public class RobotContainer {
 
     xboxController1A = new JoystickButton(xboxController1, 1);
     xboxController1B = new JoystickButton(xboxController1, 2);
-    xboxController1X = new JoystickButton(xboxController1, 3);
     xboxController1LBumper = new JoystickButton(xboxController1, 5);
     xboxController1RBumper = new JoystickButton(xboxController1, 6);
 
@@ -116,7 +112,6 @@ public class RobotContainer {
     highGear = new HighGear();
     lowGear = new LowGear();
     rotateToGoal = new RotateToGoal(0.25);
-    testDelay = new DelayTest();
 
     swerveGroup.setDefaultCommand(drive);
 
@@ -138,7 +133,6 @@ public class RobotContainer {
     xboxController1B.whenPressed(calibrateGyro);
     xboxController1LBumper.whenPressed(lowGear);
     xboxController1RBumper.whenPressed(highGear);
-    xboxController1X.whenPressed(testDelay);
   }
 
 
