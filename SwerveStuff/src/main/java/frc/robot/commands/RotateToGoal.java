@@ -11,10 +11,7 @@ import edu.wpi.first.wpilibj.drive.Vector2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpiutil.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Drive;
-import frc.robot.commands.ScanForGoal;
 import frc.robot.Robot;
 
 public class RotateToGoal extends CommandBase {
@@ -44,17 +41,32 @@ public class RotateToGoal extends CommandBase {
   @Override
   public void execute() {
     tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+
     yawOffset = RobotContainer.piVisionTable.getYawOffset();
 
     if (tapeDetected) {
-      if (Math.abs(yawOffset) > 5) {
+
+      if (Math.abs(yawOffset) > 3) {
         convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
         RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
-        System.out.println("Rotating...(Tape Detected): " + yawOffset + " " + convertedSpeed);
+        System.out.println("Rotating...");
+      } else {
+        this.isFinished();
       }
     } else {
-      Robot.scheduleCommand(new ScanForGoal());
+      double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
+      
+      if (currentAngle >= 180 && currentAngle <= 270) {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 30)));
+      } else if (currentAngle >= 270 && currentAngle <= 360) {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle - 30)));
+      } else {
+        Robot.scheduleCommand(new RotateToAngle(0.25, (currentAngle + 30)));
+      }
+      
+      System.out.println("Scanning...: " + currentAngle);
     }
+    
   }
 
   // Called once the command ends or is interrupted.
@@ -67,10 +79,14 @@ public class RotateToGoal extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (Math.abs(yawOffset) <= 5 && tapeDetected) {
-      return true;
+    if (tapeDetected) {
+      if (Math.abs(yawOffset) < 3) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return false;
+      return true;
     }
   }
 }
