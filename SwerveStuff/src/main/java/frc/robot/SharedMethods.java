@@ -7,10 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.drive.Vector2d;
-import frc.robot.RobotContainer;
-
 /**
  * Add your docs here.
  */
