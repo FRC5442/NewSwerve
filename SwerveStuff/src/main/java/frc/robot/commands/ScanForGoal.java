@@ -7,29 +7,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.drive.Vector2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.hal.sim.mockdata.PCMDataJNI;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpiutil.math.MathUtil;
-import edu.wpi.first.wpilibj.Timer;
-import frc.robot.SharedMethods;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj.drive.Vector2d;
 import frc.robot.Robot;
-import frc.robot.commands.Drive;
+import frc.robot.RobotContainer;
 
-public class RotateToGoal extends CommandBase {
+public class ScanForGoal extends CommandBase {
+  /**
+   * Creates a new ScanForGoal.
+   */
 
   double speed = 0;
-  double convertedSpeed = 0;
-  double yawOffset = 0;
-  double rightX = 0.25;
   boolean tapeDetected = false;
   boolean debugging = false;
 
-  /**
-   * Creates a new RotateToGoal.
-   */
-  public RotateToGoal(double speed) {
+  public ScanForGoal(double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(RobotContainer.swerveGroup, RobotContainer.piVisionTable);
 
@@ -39,45 +32,44 @@ public class RotateToGoal extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("Rotating to tape...");
+    System.out.println("Starting ScanForGoal...");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double currentAngle = RobotContainer.swerveGroup.getConvertedGyroAngle();
+
     tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
 
-    yawOffset = RobotContainer.piVisionTable.getYawOffset();
-
-    if (tapeDetected) {
-
-      if (Math.abs(yawOffset) > 3) {
-        convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed, debugging);
-        System.out.println("Rotating...(Tape Detected): " + yawOffset + " " + convertedSpeed);
-      } 
-
-    } else {
-      Robot.scheduleCommand(new ScanForGoal(0.25));
+    if (!tapeDetected) {
+      if (currentAngle >= 180 && currentAngle <= 270) {
+        System.out.println("Rotating...(180-270)");
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), speed, debugging);
+      } else if (currentAngle > 270 && currentAngle <= 360) {
+        System.out.println("Rotating...(270-360)");
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), -speed, debugging);
+      } else {
+        System.out.println("Rotating...(else)");
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), speed, debugging);
+      }
+        
+      System.out.println("Scanning...: " + currentAngle);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), 0, debugging);
-    System.out.println("RotateToGoal Stopped");
+    System.out.println("Ending ScanForGoal...");
+    Robot.scheduleCommand(new RotateToGoal(0.125));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if (tapeDetected) {
-      if (Math.abs(yawOffset) <= 3) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
     } else {
       return false;
     }
