@@ -54,7 +54,7 @@ public class RotateToGoal extends CommandBase {
         convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
         RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed, debugging);
         System.out.println("Rotating...(Tape Detected): " + yawOffset + " " + convertedSpeed);
-        //SharedMethods.customDelay(1);
+        SharedMethods.customDelay(1);
       } else {
         this.isFinished();
       }
@@ -63,20 +63,21 @@ public class RotateToGoal extends CommandBase {
 
       if (currentAngle >= 180 && currentAngle <= 270) {
         System.out.println("Rotating...(180-270)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX, debugging);
-        //SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX);
+        SharedMethods.customDelay(1);
       } else if (currentAngle > 270 && currentAngle <= 360) {
         System.out.println("Rotating...(270-360)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), -rightX, debugging);
-        //SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), -rightX);
+        SharedMethods.customDelay(1);
       } else {
         System.out.println("Rotating...(else)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX, debugging);
-        //SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX);
+        SharedMethods.customDelay(1);
       }
         
       System.out.println("Scanning...: " + currentAngle);
     }
+    //Timer.delay(1);
   }
 
   // Called once the command ends or is interrupted.

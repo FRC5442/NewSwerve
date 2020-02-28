@@ -20,31 +20,14 @@ public class SharedMethods {
     }
 
     public static void customDelay(double time) {
-        double i, j, x;
-
-        System.out.println(Timer.getFPGATimestamp());
-
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0, false);
-
-        for (i = 0; i < 100000; i++) {
-            for (j = 0; j < 100; j++);
-        }
-        //for (x = 0; x < 100000; x++);
-
-        System.out.println(Timer.getFPGATimestamp());
-
-        /*
-        boolean debugging = false;
-
         System.out.println("Starting Delay...");
         double initTimestamp = Timer.getFPGATimestamp();
 
         while (Timer.getFPGATimestamp() < initTimestamp + time) {
-            RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0, debugging);
+            RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
             //System.out.println("Delaying...: " + initTimestamp + " " + Timer.getFPGATimestamp() + " " + time);
         }
         System.out.println("Done Delaying");
-        */
     }
 
     public static double bearingToAngle(double bearing) {
