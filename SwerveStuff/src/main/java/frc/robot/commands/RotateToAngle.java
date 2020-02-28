@@ -15,6 +15,7 @@ import frc.robot.RobotContainer;
 public class RotateToAngle extends CommandBase {
 
   double speed, angle;
+  boolean debugging = false;
 
   /**
    * Creates a new RotateToAngle.
@@ -58,11 +59,11 @@ public class RotateToAngle extends CommandBase {
       
       if (error < 180) {
         //move D by increasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed, debugging);
       }
       else if (error >= 180) {
         //move towards D by decreasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed, debugging);
       }
     }
     else if (angle < currentAngle) {
@@ -70,11 +71,11 @@ public class RotateToAngle extends CommandBase {
       
       if (error < 180) {
         //move towards D decreasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed, debugging);
       }
       else if (error >= 180) {
         //move towards D by increasing C
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), -convertedSpeed, debugging);
       }
     }
   }
@@ -82,7 +83,7 @@ public class RotateToAngle extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0, debugging);
   }
 
   // Returns true when the command should end.

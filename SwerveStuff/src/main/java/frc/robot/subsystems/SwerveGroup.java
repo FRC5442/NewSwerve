@@ -42,7 +42,11 @@ public class SwerveGroup extends SubsystemBase {
     }
   }
 
-  public void moveSwerve(Vector2d translation, double rotation) {
+  public void moveSwerve(Vector2d translation, double rotation, boolean debugging) {
+    if (debugging) {
+      System.out.println("moveSwerve Starting...");
+    }
+
     double gyroRadians = getConvertedGyroAngle() * (Math.PI / 180); //in radians
     SmartDashboard.putNumber("Gyro Angle: ", getConvertedGyroAngle());
 
@@ -86,7 +90,13 @@ public class SwerveGroup extends SubsystemBase {
       frontLeftModule.stop();
       backRightModule.stop();
     }
-  }
+
+    if (debugging) {
+      System.out.println("moveSwerve Ending...");
+    }
+
+    //SharedMethods.customDelay(1);
+}
 
   public void calibrate() {
     frontLeftModule.calibrate();

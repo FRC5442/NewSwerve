@@ -23,6 +23,7 @@ public class RotateToGoal extends CommandBase {
   double yawOffset = 0;
   double rightX = 0.25;
   boolean tapeDetected = false;
+  boolean debugging = false;
 
   /**
    * Creates a new RotateToGoal.
@@ -49,11 +50,11 @@ public class RotateToGoal extends CommandBase {
 
     if (tapeDetected) {
 
-      if (Math.abs(yawOffset) > 3) {
+      if (Math.abs(yawOffset) > 5) {
         convertedSpeed = speed * MathUtil.clamp((yawOffset / 12) * Math.abs(yawOffset / 15), -1, 1);
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), convertedSpeed, debugging);
         System.out.println("Rotating...(Tape Detected): " + yawOffset + " " + convertedSpeed);
-        SharedMethods.customDelay(1);
+        //SharedMethods.customDelay(1);
       } else {
         this.isFinished();
       }
@@ -62,27 +63,26 @@ public class RotateToGoal extends CommandBase {
 
       if (currentAngle >= 180 && currentAngle <= 270) {
         System.out.println("Rotating...(180-270)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX);
-        SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX, debugging);
+        //SharedMethods.customDelay(1);
       } else if (currentAngle > 270 && currentAngle <= 360) {
         System.out.println("Rotating...(270-360)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), -rightX);
-        SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), -rightX, debugging);
+        //SharedMethods.customDelay(1);
       } else {
         System.out.println("Rotating...(else)");
-        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX);
-        SharedMethods.customDelay(1);
+        RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), rightX, debugging);
+        //SharedMethods.customDelay(1);
       }
         
       System.out.println("Scanning...: " + currentAngle);
     }
-    //Timer.delay(1);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), 0);
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0,0), 0, debugging);
     System.out.println("RotateToGoal Stopped");
   }
 
@@ -90,13 +90,13 @@ public class RotateToGoal extends CommandBase {
   @Override
   public boolean isFinished() {
     if (tapeDetected) {
-      if (Math.abs(yawOffset) < 3) {
+      if (Math.abs(yawOffset) <= 5) {
         return true;
       } else {
         return false;
       }
     } else {
-      return true;
+      return false;
     }
   }
 }

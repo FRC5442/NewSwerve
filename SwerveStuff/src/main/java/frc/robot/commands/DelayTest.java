@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.SharedMethods;
 
 public class DelayTest extends CommandBase {
   /**
@@ -27,10 +28,7 @@ public class DelayTest extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Delaying 1 sec...");
-    Timer.delay(1);
-    System.out.println("Done Delaying...");
-    this.isFinished();
+    SharedMethods.customDelay(1);
   }
 
   // Called once the command ends or is interrupted.
