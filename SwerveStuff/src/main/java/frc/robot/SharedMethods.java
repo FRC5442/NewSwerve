@@ -16,6 +16,17 @@ public class SharedMethods {
         return Math.round(value * scale) / scale;
     }
 
+    public static void customDelay(double time) {
+        System.out.println("Starting Delay...");
+        double initTimestamp = Timer.getFPGATimestamp();
+
+        while (Timer.getFPGATimestamp() < initTimestamp + time) {
+            RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
+            //System.out.println("Delaying...: " + initTimestamp + " " + Timer.getFPGATimestamp() + " " + time);
+        }
+        System.out.println("Done Delaying");
+    }
+
     public static double bearingToAngle(double bearing) {
         if (bearing >= 270) {
             return 90 + (90 - (bearing - (90 * ((int) (bearing / 90)))));
