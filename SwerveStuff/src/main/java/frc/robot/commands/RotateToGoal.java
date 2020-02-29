@@ -73,7 +73,7 @@ public class RotateToGoal extends CommandBase {
   @Override
   public boolean isFinished() {
     if (tapeDetected) {
-      if (Math.abs(yawOffset) <= 3) {
+      if (Math.abs(yawOffset) <= 4) {
         return true;
       } else {
         return false;

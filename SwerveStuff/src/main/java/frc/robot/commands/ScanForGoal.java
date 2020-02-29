@@ -62,7 +62,7 @@ public class ScanForGoal extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     System.out.println("Ending ScanForGoal...");
-    Robot.scheduleCommand(new RotateToGoal(0.125));
+    Robot.scheduleCommand(new RotateToGoal(0.15));
   }
 
   // Returns true when the command should end.

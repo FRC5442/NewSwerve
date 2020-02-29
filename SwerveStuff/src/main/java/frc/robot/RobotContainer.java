@@ -111,7 +111,7 @@ public class RobotContainer {
     calibrateGyro = new CalibrateGyro();
     highGear = new HighGear();
     lowGear = new LowGear();
-    rotateToGoal = new RotateToGoal(0.125);
+    rotateToGoal = new RotateToGoal(0.15);
 
     swerveGroup.setDefaultCommand(drive);
 
