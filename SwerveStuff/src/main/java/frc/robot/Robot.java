@@ -8,9 +8,12 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commandgroups.AutoTesting;
+import frc.robot.subsystems.*;
+import frc.robot.RobotContainer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,6 +22,7 @@ import frc.robot.commandgroups.AutoTesting;
  * project.
  */
 public class Robot extends TimedRobot {
+
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -49,6 +53,25 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    boolean tapeDetected = RobotContainer.piVisionTable.isTapeDetected();
+    boolean lidarConnected = RobotContainer.piVisionTable.isLidarConnected();
+    double yawOffset = RobotContainer.piVisionTable.getYawOffset();
+    double distanceM = RobotContainer.piVisionTable.getDistanceM();
+    double distanceIN = RobotContainer.piVisionTable.getDistanceIN();
+    double distanceCM = RobotContainer.piVisionTable.getDistanceCM();
+
+    SmartDashboard.putBoolean("Tape Detected: ", tapeDetected);
+    SmartDashboard.putBoolean("Lidar Connected: ", lidarConnected);
+    SmartDashboard.putNumber("Yaw Offset: ", yawOffset);
+    SmartDashboard.putNumber("Distance(m): ", distanceM);
+    SmartDashboard.putNumber("Distance(in)", distanceIN);
+    SmartDashboard.putNumber("Distance(cm)", distanceCM);
+  }
+
+  public static void scheduleCommand(Command command) {
+    System.out.println("Scheduling Command " + command);
+    command.schedule();
   }
 
   /**

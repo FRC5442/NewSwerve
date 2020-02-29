@@ -14,6 +14,7 @@ import frc.robot.RobotContainer;
 public class TranslateDistance extends CommandBase {
   
   double speed, angle, distance;
+  boolean debugging = false;
   
   /**
    * Creates a new TranslateDistance.
@@ -39,13 +40,13 @@ public class TranslateDistance extends CommandBase {
   public void execute() {
     double x = speed * Math.cos(angle * (Math.PI / 180));
     double y = -speed * Math.sin(angle * (Math.PI / 180));
-    RobotContainer.swerveGroup.moveSwerve(new Vector2d(x, y), 0);
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(x, y), 0, debugging);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0);
+    RobotContainer.swerveGroup.moveSwerve(new Vector2d(0, 0), 0, debugging);
   }
 
   // Returns true when the command should end.
